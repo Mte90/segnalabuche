@@ -376,8 +376,8 @@
                     Vai alla Mappa Segnalazioni
                 </a>
             </p>
-            <p>Segnala un Guasto - Comune di Rieti</p>
-            <p class="mb-0">&copy; {{ date('Y') }} Comune di Rieti. Tutti i diritti riservati.</p>
+            <p>Segnala un Guasto</p>
+            <p class="mb-0">&copy; {{ date('Y') }} Progetto personale. Tutti i diritti riservati.</p>
         </div>
     </footer>
     

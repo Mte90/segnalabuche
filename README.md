@@ -1,6 +1,6 @@
-# Segnala un guasto - Rieti
+# Segnala un guasto
 
-Un'applicazione Laravel 11 per la segnalazione di problemi stradali nel comune di Rieti.
+Un'applicazione Laravel 11 per la segnalazione di problemi stradali.
 
 ## Requisiti
 
@@ -8,6 +8,10 @@ Un'applicazione Laravel 11 per la segnalazione di problemi stradali nel comune d
 - Composer 2.x
 - SQLite (modulo `pdo_sqlite` per PHP)
 - Estensioni PHP: `pdo`, `mbstring`, `tokenizer`, `fileinfo`, `intl`, `json`
+
+## Per chi è pensato
+
+Questo progetto è pensato per comuni, città e province. Configura il tuo comune (ad esempio **Bugliano**) modificando `config/city.php`.
 
 ### Installazione modulo SQLite
 
@@ -52,6 +56,13 @@ sudo apt-get install php8.5-sqlite3
    ```
 
 7. Avvia il server di sviluppo:
+
+### Configurazione della città (esempio Bugliano)
+
+```php
+// config/city.php
+return ['name' => env('CITY_NAME', 'Bugliano')];
+```
    ```bash
    php artisan serve
    ```
@@ -99,7 +110,7 @@ MAIL_USERNAME=tua.email@dominio.com
 MAIL_PASSWORD=tpfz gbiq xxxx xxxx
 MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS=tua.email@dominio.com
-MAIL_FROM_NAME="Segnalazioni Comune di Rieti"
+MAIL_FROM_NAME="Segnalazioni"
 ```
 
 ## Funzionalità
@@ -319,6 +330,8 @@ vi resources/views/mail/guasto_custom/perdita_acqua.blade.php
 
 ## Amministrazione
 
+*Questo pannello amministrativo si riferisce al comune configurato, ad esempio **Bugliano***
+
 ### Aggiungere nuove tipologie di guasto
 
 1. Aprire `config/guasto_mail.php`.
@@ -364,4 +377,4 @@ resources/views/mail/guasto_custom/
 
 ---
 
-Comune di Rieti
+Progetto personale

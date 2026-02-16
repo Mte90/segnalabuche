@@ -390,8 +390,8 @@
                     Vai alla Mappa Segnalazioni
                 </a>
             </p>
-            <p>Pannello Admin - Comune di Rieti</p>
-            <p class="mb-0">&copy; {{ date('Y') }} Comune di Rieti. Tutti i diritti riservati.</p>
+            <p>Pannello Admin</p>
+            <p class="mb-0">&copy; {{ date('Y') }} Progetto personale. Tutti i diritti riservati.</p>
         </div>
     </footer>
     

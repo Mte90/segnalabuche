@@ -288,8 +288,8 @@
     
     <footer class="text-center py-4 text-muted small">
         <div class="container">
-            <p>Mappa Segnalazioni - Comune di Rieti</p>
-            <p class="mb-0">&copy; {{ date('Y') }} Comune di Rieti. Tutti i diritti riservati.</p>
+            <p>Mappa Segnalazioni</p>
+            <p class="mb-0">&copy; {{ date('Y') }} Progetto personale. Tutti i diritti riservati.</p>
         </div>
     </footer>
     
