@@ -19,7 +19,7 @@
         <li><strong>Data invio:</strong> {{ $segnalazione->created_at->format('d/m/Y H:i') }}</li>
     </ul>
 
-    <h3> foto</h3>
+    <h3>Foto</h3>
     @if(!empty($segnalazione->foto))
         <ul>
             @foreach($segnalazione->foto as $foto)

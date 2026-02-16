@@ -20,7 +20,7 @@
         <li><strong>Data approvazione:</strong> {{ now()->format('d/m/Y H:i') }}</li>
     </ul>
 
-    <h3> foto</h3>
+    <h3>Foto</h3>
     @if(!empty($segnalazione->foto))
         <ul>
             @foreach($segnalazione->foto as $foto)
