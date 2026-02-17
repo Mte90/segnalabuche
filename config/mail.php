@@ -113,4 +113,23 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | IMAP Settings for Email Responses
+    |--------------------------------------------------------------------------
+    |
+    | These settings are used to fetch incoming email replies from the
+    | admin email account. The ProcessEmailResponses listener will connect
+    | to this IMAP server to check for replies to sent emails.
+    |
+    */
+
+    'imap' => [
+        'host' => env('IMAP_HOST'),
+        'port' => env('IMAP_PORT', 993),
+        'encryption' => env('IMAP_ENCRYPTION', 'ssl'),
+        'username' => env('IMAP_USERNAME'),
+        'password' => env('IMAP_PASSWORD'),
+    ],
+
 ];

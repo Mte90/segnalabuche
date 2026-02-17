@@ -113,6 +113,20 @@ MAIL_FROM_ADDRESS=tua.email@dominio.com
 MAIL_FROM_NAME="Segnalazioni"
 ```
 
+### Configurazione IMAP per risposte email
+
+Per ricevere le risposte alle email inviate, configura le impostazioni IMAP in `.env`:
+
+```env
+IMAP_HOST=imap.gmail.com
+IMAP_PORT=993
+IMAP_ENCRYPTION=ssl
+IMAP_USERNAME=tua.email@dominio.com
+IMAP_PASSWORD=tpfz gbiq xxxx xxxx
+```
+
+Questo permette al sistema di recuperare automaticamente le risposte alle email inviate e registrarle nella tabella `email_response_messages`.
+
 ## Funzionalità
 
 ### Segnalazione guasti
@@ -126,6 +140,12 @@ MAIL_FROM_NAME="Segnalazioni"
 - Filtri per stato (pendente, approvato, rifiutato)
 - Visualizzazione coordinate e foto
 - Invio email di notifica all'approvazione
+
+### Tracking email reply
+- Tracking delle email inviate con multirecipient (email primarie + cc)
+- Registrazione delle risposte alle email inviate
+- Relazione tra email inviate e rispostericevute tramite Reply-To
+- Tabella `email_response_messages` per memorizzare invii e ricevimenti
 
 ### Anti-spam
 - Rate limiting per IP
@@ -149,7 +169,7 @@ MAIL_FROM_NAME="Segnalazioni"
 - **Lista segnalazioni**: Visualizza segnalazioni in stato `pending`.
 - **Bottoni**: `Approva` / `Rifiuta` per ogni segnalazione.
 - **Modal di conferma**: Richiede conferma prima di eseguire l'azione.
-- **Email automatica**: All'approvazione viene inviata un'email al comune configurato.
+- **Email automatica**: Invia email ai destinatari configurati (multipli + cc) con tracking delle risposte
 
 ## Accesso Admin
 
@@ -226,6 +246,30 @@ Poi usare un seeder che legge queste variabili.
 
 > **Nota di sicurezza**: In produzione, usare sempre password complesse e implementare un sistema di ruoli proper (es. Laravel Spatie Permissions).
 
+### tracking Email Reply
+
+Per ricevere le risposte alle email inviate:
+
+1. Configura le credenziali IMAP in `.env`:
+   ```env
+   IMAP_HOST=imap.gmail.com
+   IMAP_PORT=993
+   IMAP_ENCRYPTION=ssl
+   IMAP_USERNAME=il_tuo_email@dominio.com
+   IMAP_PASSWORD=la_tua_password_app
+   ```
+
+2. Esegui periodicamente il listener per recuperare le risposte:
+   ```bash
+   php artisan tinker --execute="(new App\Listeners\ProcessEmailResponses)->handle();"
+   ```
+
+3. Le risposte vengono salvate nella tabella `email_response_messages` con:
+   - Relazione alla segnalazione originale
+   - Corpo del messaggio
+   - Metadata (from, to, date)
+   - Timestamp di ricezione
+
 ## Struttura del progetto
 
 ```
@@ -233,12 +277,16 @@ app/
 ├── Http/Controllers/
 │   └── Api/
 │       └── SegnalazioneController.php
+├── Listeners/
+│   └── ProcessEmailResponses.php
 ├── Models/
-│   └── Segnalazione.php
+│   ├── Segnalazione.php
+│   └── EmailResponseMessage.php
 └── Services/
     └── DuplicateChecker.php
 database/
 ├── migrations/
+│   └── 2026_02_17_081458_create_email_responses_table.php
 └── seeders/
 resources/
 ├── views/
