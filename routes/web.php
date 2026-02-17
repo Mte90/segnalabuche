@@ -58,3 +58,15 @@ Route::put('/admin/segnalazioni/{id}/status', function (Illuminate\Http\Request 
         'segnalazione' => $segnalazione,
     ]);
 })->name('admin.segnalazioni.status.update');
+
+Route::delete('/admin/segnalazioni/{id}', function ($id) {
+    $segnalazione = Segnalazione::find($id);
+
+    if (! $segnalazione) {
+        return response()->json(['error' => 'Segnalazione non trovata'], 404);
+    }
+
+    $segnalazione->delete();
+
+    return response()->json(['message' => 'Segnalazione eliminata con successo']);
+})->name('admin.segnalazioni.delete');

@@ -359,6 +359,10 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                             Rifiuta
                                         </button>
+                                        <button type="button" class="btn btn-outline-danger" onclick="showDeleteModal({{$segnalazione->id}})">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><polyline points="3 6 5 6 21 6"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                            Elimina
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -460,11 +464,69 @@
         </div>
     </div>
     
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Conferma Eliminazione</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Sei sicuro di voler eliminare questa segnalazione? L'azione non può essere annullata.</p>
+                    <input type="hidden" id="deleteSegnalazioneId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Annulla</button>
+                    <button type="button" class="btn btn-confirm-reject" id="confirmDeleteBtn">Elimina</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
         let segnalazioneId = null;
         let newStatus = null;
+        
+        function showDeleteModal(id) {
+            document.getElementById('deleteSegnalazioneId').value = id;
+            deleteModal.show();
+        }
+        
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            const id = document.getElementById('deleteSegnalazioneId').value;
+            deleteSegnalazione(id);
+        });
+        
+        function deleteSegnalazione(id) {
+            deleteModal.hide();
+            
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            if (!csrfToken) {
+                alert('Errore: Token CSRF non trovato');
+                return;
+            }
+            
+            fetch(`/admin/segnalazioni/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message || 'Segnalazione eliminata con successo');
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Errore:', error);
+                alert('Errore durante l\'eliminazione della segnalazione');
+            });
+        }
         
         function showConfirmModal(id, status) {
             segnalazioneId = id;

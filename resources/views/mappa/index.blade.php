@@ -189,20 +189,22 @@
     </style>
 </head>
 <body>
-    <header class="header-section">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <h1 id="cityTitle">Segnalazioni Stradali</h1>
-                    <p>Visualizza e segnala problemi sulla viabilità urbana</p>
-                </div>
-                <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#faqModal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                    Come funziona?
-                </button>
-            </div>
-        </div>
-    </header>
+     <header class="header-section">
+         <div class="container">
+             <div class="d-flex justify-content-between align-items-center mb-3">
+                 <div>
+                     <h1 id="cityTitle">Segnalazioni Stradali</h1>
+                     <p>Visualizza e segnala problemi sulla viabilità urbana</p>
+                 </div>
+             </div>
+             <div class="text-center mt-3">
+                 <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#faqModal">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                     Come funziona?
+                 </button>
+             </div>
+         </div>
+     </header>
     
     <div class="container-fluid">
         <div class="filters-panel">
@@ -480,12 +482,24 @@
                             <strong class="ms-2" style="color: #495057;">${segnalazione.tipo}</strong>
                             <span class="badge ${badgeClass} ms-auto">${badgeText}</span>
                         </div>
-                        ${segnalazione.descrizione ? `<p style="color: #495057; margin: 0 0 0.5rem 0;">${segnalazione.descrizione}</p>` : ''}
-                        <p style="color: #6c757d; margin: 0;">Lat: ${segnalazione.lat.toFixed(6)}</p>
-                        <p style="color: #6c757d; margin: 0;">Lng: ${segnalazione.lng.toFixed(6)}</p>
-                        <p style="color: #6c757d; margin: 0;">Data: ${new Date(segnalazione.created_at).toLocaleDateString('it-IT')}</p>
-                    </div>
-                `;
+                         ${segnalazione.descrizione ? `<p style="color: #495057; margin: 0 0 0.5rem 0;">${segnalazione.descrizione}</p>` : ''}
+                         
+                         ${segnalazione.foto && segnalazione.foto.length > 0 ? `
+                             <div class="mb-2">
+                                 <div class="d-flex flex-wrap gap-1">
+                                     ${segnalazione.foto.slice(0, 3).map((foto, idx) => `
+                                         <a href="${foto}" target="_blank" class="text-decoration-none">
+                                             <img src="${foto}" style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #dee2e6;" alt="Foto ${idx + 1}">
+                                         </a>
+                                     `).join('')}
+                                 </div>
+                                 ${segnalazione.foto.length > 3 ? `<p class="text-muted small">+${segnalazione.foto.length - 3} foto in più</p>` : ''}
+                             </div>
+                         ` : ''}
+                         
+                         <p style="color: #6c757d; margin: 0;">Data: ${new Date(segnalazione.created_at).toLocaleDateString('it-IT')}</p>
+                     </div>
+                 `;
                 
                 marker.bindPopup(popupContent);
                 markersLayer.addLayer(marker);
