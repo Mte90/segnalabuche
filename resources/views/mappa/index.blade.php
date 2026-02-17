@@ -197,14 +197,35 @@
                      <p>Visualizza e segnala problemi sulla viabilità urbana</p>
                  </div>
              </div>
-             <div class="text-center mt-3">
-                 <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#faqModal">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                     Come funziona?
-                 </button>
-             </div>
-         </div>
-     </header>
+              <div class="text-center mt-3">
+                  <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#faqModal">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                      Come funziona?
+                  </button>
+              </div>
+          </div>
+          <!-- Stats Bar (clickable to filter) -->
+          <div class="container py-2 mt-3">
+              <div class="stats-container">
+                  <div class="stat-item" onclick="filterByStatus('pending')">
+                      <div class="stat-number" id="pendingCount">0</div>
+                      <div class="stat-label">In sospeso</div>
+                  </div>
+                  <div class="stat-item" onclick="filterByStatus('approved')">
+                      <div class="stat-number" id="approvedCount">0</div>
+                      <div class="stat-label">Approvato</div>
+                  </div>
+                  <div class="stat-item" onclick="filterByStatus('rejected')">
+                      <div class="stat-number" id="rejectedCount">0</div>
+                      <div class="stat-label">Rifiutato</div>
+                  </div>
+                  <div class="stat-item" onclick="filterWithPhotos()">
+                      <div class="stat-number" id="withPhotosCount">0</div>
+                      <div class="stat-label">Con foto</div>
+                  </div>
+              </div>
+          </div>
+      </header>
     
     <div class="container-fluid">
         <div class="filters-panel">
@@ -242,33 +263,11 @@
             </div>
         </div>
         
-        <!-- Stats Bar (clickable to filter) -->
-        <div class="container py-2">
-            <div class="stats-container">
-                <div class="stat-item" onclick="filterByStatus('pending')">
-                    <div class="stat-number" id="pendingCount">0</div>
-                    <div class="stat-label">In sospeso</div>
-                </div>
-                <div class="stat-item" onclick="filterByStatus('approved')">
-                    <div class="stat-number" id="approvedCount">0</div>
-                    <div class="stat-label">Approvato</div>
-                </div>
-                <div class="stat-item" onclick="filterByStatus('rejected')">
-                    <div class="stat-number" id="rejectedCount">0</div>
-                    <div class="stat-label">Rifiutato</div>
-                </div>
-                <div class="stat-item" onclick="filterWithPhotos()">
-                    <div class="stat-number" id="withPhotosCount">0</div>
-                    <div class="stat-label">Con foto</div>
-                </div>
-            </div>
-        </div>
-        
         <div class="map-container">
             <div id="map"></div>
         </div>
         
-        <div class="container mb-4">
+        <div class="container mb-4" style="max-width: 80%; margin: 0 auto;">
             <div class="row">
                 <div class="col-md-6">
                     <div class="info-card">
@@ -478,9 +477,11 @@
                 const popupContent = `
                     <div style="max-width: 300px;">
                         <div class="d-flex align-items-center mb-2">
+                            <span class="badge ${badgeClass} me-auto">${badgeText}</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
                             ${tipoIcon}
                             <strong class="ms-2" style="color: #495057;">${segnalazione.tipo}</strong>
-                            <span class="badge ${badgeClass} ms-auto">${badgeText}</span>
                         </div>
                          ${segnalazione.descrizione ? `<p style="color: #495057; margin: 0 0 0.5rem 0;">${segnalazione.descrizione}</p>` : ''}
                          
