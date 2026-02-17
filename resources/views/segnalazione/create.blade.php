@@ -201,6 +201,14 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path d="M9 18l6-6-6-6"/></svg>
                 </h6>
             </div>
+            
+            <!-- Map Link Button -->
+            <div class="mt-4 text-center">
+                <a href="{{ route('mappa') }}" class="btn btn-outline-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    Vai alla Mappa
+                </a>
+            </div>
         </div>
     </header>
     

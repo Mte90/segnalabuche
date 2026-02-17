@@ -65,61 +65,12 @@ L'applicazione sarà disponibile all'indirizzo `http://localhost:8000`
 
 ## Configurazione
 
-### Configurazione città
+Per la configurazione dettagliata (email, template, IMAP, etc.), consulta il file **[SETUP.md](SETUP.md)**.
 
-Modifica il file `config/city.php` per impostare il nome della città:
+La configurazione principale include:
 
-```php
-return [
-    'name' => 'Rieti',
-];
-```
-
-### Configurazione email per guasti
-
-Il file di configurazione è `config/guasto_mail.php`. Al suo interno è definita una mappa `tipologia => ['email' => 'destinatario', 'template' => 'nome_template']`.
-
-Per maggiori informazioni sulla personalizzazione dei template, vedere la sezione **Template Email Personalizzabili (Git-Friendly)**.
-
-**Esempio di aggiunta di una nuova tipologia**:
-```php
-return [
-    // ... altre tipologie
-    'nuova_tipologia' => [
-        'email' => 'nuova@comune.rieti.it',
-        'template' => 'nuova_tipologia', // Opzionale
-    ],
-];
-```
-
-### Configurazione email generale
-
-Configura in `.env` le impostazioni SMTP:
-
-```env
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=tua.email@dominio.com
-MAIL_PASSWORD=tpfz gbiq xxxx xxxx
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=tua.email@dominio.com
-MAIL_FROM_NAME="Segnalazioni"
-```
-
-### Configurazione IMAP per risposte email
-
-Per ricevere le risposte alle email inviate, configura le impostazioni IMAP in `.env`:
-
-```env
-IMAP_HOST=imap.gmail.com
-IMAP_PORT=993
-IMAP_ENCRYPTION=ssl
-IMAP_USERNAME=tua.email@dominio.com
-IMAP_PASSWORD=tpfz gbiq xxxx xxxx
-```
-
-Questo permette al sistema di recuperare automaticamente le risposte alle email inviate e registrarle nella tabella `email_response_messages`.
+- **Nome città**: Modifica `config/city.php`
+- **Email guasti**: Configura `config/guasto_mail.php` con destinatari per ogni tipologia
 
 ## Funzionalità
 
@@ -171,65 +122,32 @@ Questo permette al sistema di recuperare automaticamente le risposte alle email 
 
 Per accedere al pannello admin è necessario un utente con ruolo amministratore.
 
-#### Opzione 1: Creazione manuale tramite Artisan
+#### Opzione 1: Creazione tramite Artisan (consigliato)
 
-Laravel 11 non include più la scaffolding di autenticazione di default. Per creare un account admin:
+Esegui il comando per creare l'utente admin. Per sviluppo, le credenziali predefinite sono `admin`/`admin`:
 
 ```bash
-# Creare un nuovo utente manualmente via Tinker
-php artisan tinker
+php artisan admin:create
+```
 
-# Esecuire i seguenti comandi in tinker:
-use App\Models\User;
-$user = User::create([
-    'name' => 'Admin',
-    'email' => 'admin@comune.rieti.it',
-    'password' => bcrypt('la_tua_password_sicura'),
-]);
-# Aggiungere il ruolo admin (se implementato nel progetto)
+Per personalizzare le credenziali:
+
+```bash
+php artisan admin:create "Nome Admin" "admin@comune.rieti.it" "la_tua_password"
 ```
 
 #### Opzione 2: Creazione tramite Seeder (solo sviluppo)
 
-Creare un seeder per utente admin in `database/seeders/AdminUserSeeder.php`:
+Esegui il seeder che crea l'utente admin predefinito:
 
-```php
-<?php
-
-namespace Database\Seeders;
-
-use Illuminate\Database\Seeder;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-
-class AdminUserSeeder extends Seeder
-{
-    public function run(): void
-    {
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@comune.rieti.it',
-            'password' => Hash::make('admin123'), // Cambiare in produzione!
-        ]);
-    }
-}
-```
-
-Eseguire con:
 ```bash
-php artisan db:seed --class=AdminUserSeeder
+php artisan db:seed --class=CreateAdminUserSeeder
 ```
 
-#### Opzione 3: Credenziali in .env (sviluppo)
-
-Per sviluppo locale, aggiungere le credenziali in `.env`:
-
-```env
-ADMIN_EMAIL=admin@comune.rieti.it
-ADMIN_PASSWORD=admin123
-```
-
-Poi usare un seeder che legge queste variabili.
+L'utente creato avrà:
+- Nome: Admin
+- Email: admin@comune.rieti.it
+- Password: admin
 
 ### Accesso al pannello
 
