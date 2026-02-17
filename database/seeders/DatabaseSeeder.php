@@ -24,8 +24,11 @@ class DatabaseSeeder extends Seeder
         }
 
         // Create sample segnalazioni with various statuses
+        // Placeholder images from placehold.co
+        
+        // 1. Perdita d'acqua - pending, with photo
         Segnalazione::create([
-            'foto' => [],
+            'foto' => ['https://placehold.co/600x400/28a745/white?text=Perdita+Acqua'],
             'tipo' => 'perdita d\'acqua',
             'lat' => 42.4097,
             'lng' => 12.8607,
@@ -33,8 +36,9 @@ class DatabaseSeeder extends Seeder
             'status' => 'pending',
         ]);
 
+        // 2. Buca stradale - approved, with photo
         Segnalazione::create([
-            'foto' => [],
+            'foto' => ['https://placehold.co/600x400/dc3545/white?text=Buca+Stradale'],
             'tipo' => 'buca stradale',
             'lat' => 42.4102,
             'lng' => 12.8591,
@@ -42,8 +46,12 @@ class DatabaseSeeder extends Seeder
             'status' => 'approved',
         ]);
 
+        // 3. Illuminazione pubblica - approved, with 2 photos
         Segnalazione::create([
-            'foto' => [],
+            'foto' => [
+                'https://placehold.co/600x400/ffc107/white?text=Lampione+Spento',
+                'https://placehold.co/600x400/ffc107/white?text=Dettaglio+Lampione'
+            ],
             'tipo' => 'illuminazione pubblica',
             'lat' => 42.4089,
             'lng' => 12.8621,
@@ -51,8 +59,9 @@ class DatabaseSeeder extends Seeder
             'status' => 'approved',
         ]);
 
+        // 4. Tombino attappato - rejected, with photo
         Segnalazione::create([
-            'foto' => [],
+            'foto' => ['https://placehold.co/600x400/6c757d/white?text=Tombino+Attappato'],
             'tipo' => 'tombino attappato',
             'lat' => 42.4115,
             'lng' => 12.8578,
@@ -60,6 +69,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'rejected',
         ]);
 
+        // 5. Altro - pending, no photo
         Segnalazione::create([
             'foto' => [],
             'tipo' => 'altro',
@@ -69,8 +79,9 @@ class DatabaseSeeder extends Seeder
             'status' => 'pending',
         ]);
 
+        // 6. Perdita d'acqua - rejected, with photo
         Segnalazione::create([
-            'foto' => [],
+            'foto' => ['https://placehold.co/600x400/28a745/white?text=Perdita+Parco'],
             'tipo' => 'perdita d\'acqua',
             'lat' => 42.4085,
             'lng' => 12.8599,
