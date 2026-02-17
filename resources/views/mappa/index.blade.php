@@ -153,6 +153,10 @@
             color: #c82333;
         }
         
+        .stat-item {
+            cursor: pointer;
+        }
+        
         .info-card p {
             margin-bottom: 0.5rem;
             color: #495057;
@@ -204,27 +208,24 @@
                   </button>
               </div>
           </div>
-          <!-- Stats Bar (clickable to filter) -->
-          <div class="container py-2 mt-3">
-              <div class="stats-container">
-                  <div class="stat-item" onclick="filterByStatus('pending')">
-                      <div class="stat-number" id="pendingCount">0</div>
-                      <div class="stat-label">In sospeso</div>
-                  </div>
-                  <div class="stat-item" onclick="filterByStatus('approved')">
-                      <div class="stat-number" id="approvedCount">0</div>
-                      <div class="stat-label">Approvato</div>
-                  </div>
-                  <div class="stat-item" onclick="filterByStatus('rejected')">
-                      <div class="stat-number" id="rejectedCount">0</div>
-                      <div class="stat-label">Rifiutato</div>
-                  </div>
-                  <div class="stat-item" onclick="filterWithPhotos()">
-                      <div class="stat-number" id="withPhotosCount">0</div>
-                      <div class="stat-label">Con foto</div>
-                  </div>
-              </div>
-          </div>
+           <!-- Stats Bar (clickable to filter) -->
+           <!-- Note: Rifiutato is excluded from mappa stats as per requirement -->
+           <div class="container py-2 mt-3">
+               <div class="stats-container">
+                   <div class="stat-item" onclick="filterByStatus('pending')">
+                       <div class="stat-number" id="pendingCount">0</div>
+                       <div class="stat-label">In sospeso</div>
+                   </div>
+                   <div class="stat-item" onclick="filterByStatus('approved')">
+                       <div class="stat-number" id="approvedCount">0</div>
+                       <div class="stat-label">Approvato</div>
+                   </div>
+                   <div class="stat-item" onclick="filterWithPhotos()">
+                       <div class="stat-number" id="withPhotosCount">0</div>
+                       <div class="stat-label">Con foto</div>
+                   </div>
+               </div>
+           </div>
       </header>
     
     <div class="container-fluid">
@@ -236,7 +237,6 @@
                         <option value="">Tutti</option>
                         <option value="pending">In sospeso</option>
                         <option value="approved">Approvato</option>
-                        <option value="rejected">Rifiutato</option>
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -381,6 +381,11 @@
             document.getElementById('approvedCount').textContent = {{ $approvedCount ?? 0 }};
             document.getElementById('rejectedCount').textContent = {{ $rejectedCount ?? 0 }};
             document.getElementById('withPhotosCount').textContent = {{ $withPhotosCount ?? 0 }};
+        }
+
+        function filterWithPhotos() {
+            // Filter to show only segnalazioni with photos
+            alert('Funzionalità filtro foto in arrivo: mostra solo le segnalazioni con foto');
         }
         
         function filterByStatus(status) {

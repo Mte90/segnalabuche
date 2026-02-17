@@ -199,6 +199,14 @@
             font-weight: 500;
         }
         
+        .stat-item {
+            cursor: pointer;
+        }
+        
+        .stat-item:hover .stat-number {
+            color: #c82333;
+        }
+        
         .modal-footer {
             border-top: none;
         }
@@ -252,19 +260,19 @@
     <div class="container py-5">
         <!-- Stats Bar -->
         <div class="stats-bar">
-            <div class="stat-item">
+            <div class="stat-item" onclick="filterAdminByStatus('')">
                 <div class="stat-number" id="totalCount">{{ $count ?? 0 }}</div>
                 <div class="stat-label">Totali</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item" onclick="filterAdminByStatus('pending')">
                 <div class="stat-number" id="pendingCount">{{ $pendingCount ?? 0 }}</div>
                 <div class="stat-label">In Sospeso</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item" onclick="filterAdminByStatus('approved')">
                 <div class="stat-number" id="approvedCount">{{ $approvedCount ?? 0 }}</div>
                 <div class="stat-label">Approvate</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item" onclick="filterAdminByStatus('rejected')">
                 <div class="stat-number" id="rejectedCount">{{ $rejectedCount ?? 0 }}</div>
                 <div class="stat-label">Rifiutate</div>
             </div>
@@ -336,12 +344,15 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><circle cx="12" cy="12" r="10"></circle></svg>
                                         Coordinate: {{ $segnalazione->lat }}, {{ $segnalazione->lng }}
                                     </p>
-                                    @if(!empty($segnalazione->foto))
-                                        <p class="extra-info">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                                            {{ count($segnalazione->foto) }} foto allegata(e)
-                                        </p>
-                                    @endif
+                                     @if(!empty($segnalazione->foto))
+                                         <p class="extra-info">
+                                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                             <button type="button" class="btn btn-sm btn-outline-primary" onclick="showPhotos({{ htmlspecialchars(json_encode($segnalazione->foto)) }}, '{{ $segnalazione->tipo }}')">
+                                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><eye></eye></svg>
+                                                 Visualizza {{ count($segnalazione->foto) }} foto{{ count($segnalazione->foto) > 1 ? 's' : '' }}
+                                             </button>
+                                         </p>
+                                     @endif
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -484,12 +495,63 @@
         </div>
     </div>
     
+    <!-- Photos Modal -->
+    <div class="modal fade" id="photosModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="photosModalTitle">Foto Segnalazione</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                </div>
+                <div class="modal-body" id="photosModalBody">
+                    <!-- Photos will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
         const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        const photosModal = new bootstrap.Modal(document.getElementById('photosModal'));
         let segnalazioneId = null;
         let newStatus = null;
+        let currentPhotos = [];
+        
+        function showPhotos(photosJson, tipo) {
+            try {
+                currentPhotos = typeof photosJson === 'string' ? JSON.parse(photosJson) : photosJson;
+                
+                const modalTitle = document.getElementById('photosModalTitle');
+                if (modalTitle) {
+                    modalTitle.textContent = `Foto - ${tipo}`;
+                }
+                
+                const modalBody = document.getElementById('photosModalBody');
+                if (modalBody && currentPhotos.length > 0) {
+                    let html = '<div class="row g-3">';
+                    currentPhotos.forEach((photo, index) => {
+                        html += `
+                            <div class="col-md-6 col-lg-4">
+                                <a href="${photo}" target="_blank" class="text-decoration-none">
+                                    <img src="${photo}" class="img-fluid rounded shadow" style="max-width: 100%; cursor: pointer;" alt="Foto ${index + 1}">
+                                    <p class="text-center small mt-2">Clicca per ingrandire</p>
+                                </a>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    modalBody.innerHTML = html;
+                    photosModal.show();
+                } else {
+                    modalBody.innerHTML = '<p class="text-center text-muted">Nessuna foto disponibile</p>';
+                    photosModal.show();
+                }
+            } catch (e) {
+                alert('Errore nel caricamento delle foto');
+            }
+        }
         
         function showDeleteModal(id) {
             document.getElementById('deleteSegnalazioneId').value = id;
@@ -603,6 +665,15 @@
         function resetAdminFilters() {
             document.getElementById('adminFilterStatus').value = '';
             document.getElementById('adminFilterTipo').value = '';
+        }
+        
+        // Admin stats filter function
+        function filterAdminByStatus(status) {
+            const select = document.getElementById('adminFilterStatus');
+            if (select) {
+                select.value = status;
+                updateAdminMap();
+            }
         }
     </script>
 </body>

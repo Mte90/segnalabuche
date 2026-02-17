@@ -149,6 +149,28 @@ L'utente creato avrà:
 - Email: admin@comune.bugliano.it
 - Password: admin
 
+#### Opzione 3: Accesso via SSH (alternativa per produzione)
+
+Se non hai accesso SSH al server o non puoi usare Artisan, puoi creare l'utente admin direttamente nel database:
+
+1. Accedi al database SQLite:
+```bash
+sqlite3 database/database.sqlite
+```
+
+2. Esegui il comando SQL:
+```sql
+INSERT INTO users (name, email, password, created_at, updated_at) 
+VALUES ('Admin', 'admin@comune.bugliano.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', datetime('now'), datetime('now'));
+```
+
+3. Esci da SQLite:
+```sql
+.quit
+```
+
+> Nota: La password `admin` è hashata con bcrypt. Il hash utilizzato è `$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi`.
+
 ### Accesso al pannello
 
 1. Andare all'URL: `http://localhost:8000/admin/segnalazioni`
