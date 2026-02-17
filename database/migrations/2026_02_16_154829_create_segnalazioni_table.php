@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('segnalazioni', function (Blueprint $table) {
             $table->id();
-            $table->json('foto'); // array di nomi file
-            $table->string('tipo'); // es. "perdita d'acqua", "tombino attappato", "buca stradale"
-            $table->double('lat'); // latitudine GPS
-            $table->double('lng'); // longitudine GPS
-            $table->text('descrizione'); // descrizione del problema
+            $table->json('foto');
+            $table->string('tipo');
+            $table->double('lat');
+            $table->double('lng');
+            $table->text('descrizione');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->boolean('is_resolved')->default(false);
+            $table->timestamp('approved_at')->nullable();
             $table->timestamps();
         });
     }

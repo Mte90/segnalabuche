@@ -15,6 +15,8 @@ class ApprovedNotificationMail extends Mailable
 
     public Segnalazione $segnalazione;
 
+    public ?string $customReplyTo = null;
+
     public function __construct(Segnalazione $segnalazione)
     {
         $this->segnalazione = $segnalazione;
@@ -22,9 +24,19 @@ class ApprovedNotificationMail extends Mailable
 
     public function envelope(): Envelope
     {
+        $replyTo = $this->customReplyTo ?? config('mail.from.address');
+
         return new Envelope(
             subject: 'Segnalazione approvata',
+            replyTo: [$replyTo],
         );
+    }
+
+    public function withReplyTo(string $replyTo): self
+    {
+        $this->customReplyTo = $replyTo;
+
+        return $this;
     }
 
     public function content(): Content

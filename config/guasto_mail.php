@@ -3,23 +3,43 @@
 return [
     'admin_email' => 'admin@comune.rieti.it',
     'perdita d\'acqua' => [
-        'email' => 'acqua@comune.rieti.it',
+        'emails' => [
+            'acqua@comune.rieti.it',
+            'segreteria@comune.rieti.it',
+        ],
+        'cc' => [
+            'ispezione@comune.rieti.it',
+        ],
         'template' => 'perdita_acqua',
     ],
     'tombino attappato' => [
-        'email' => 'manutenzione@comune.rieti.it',
+        'emails' => [
+            'manutenzione@comune.rieti.it',
+        ],
+        'cc' => [],
         'template' => 'tombino',
     ],
     'buca stradale' => [
-        'email' => 'strade@comune.rieti.it',
+        'emails' => [
+            'strade@comune.rieti.it',
+            'urp@comune.rieti.it',
+        ],
+        'cc' => [],
         'template' => 'buca',
     ],
     'illuminazione pubblica' => [
-        'email' => 'illuminazione@comune.rieti.it',
+        'emails' => [
+            'illuminazione@comune.rieti.it',
+        ],
+        'cc' => [],
         'template' => 'illuminazione',
     ],
     'altro' => [
-        'email' => 'protocollo@comune.rieti.it',
+        'emails' => [
+            'protocollo@comune.rieti.it',
+            'ufficio_tecnico@comune.rieti.it',
+        ],
+        'cc' => [],
         'template' => 'altro',
     ],
 ];

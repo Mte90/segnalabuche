@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Segnalazione;
-use App\Services\DuplicateChecker;
 use App\Mail\ApprovalRequestMail;
 use App\Mail\ApprovedNotificationMail;
+use App\Models\EmailResponseMessage;
+use App\Models\Segnalazione;
+use App\Services\DuplicateChecker;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -47,10 +49,10 @@ class SegnalazioneController extends Controller
         ]);
 
         $fotoPaths = [];
-        
+
         if ($request->hasFile('foto')) {
             foreach ($request->file('foto') as $file) {
-                $filename = 'segnalazione_' . Str::uuid() . '.' . $file->getClientOriginalExtension();
+                $filename = 'segnalazione_'.Str::uuid().'.'.$file->getClientOriginalExtension();
                 $filepath = $file->storeAs('segnalazioni', $filename, 'public');
                 $fotoPaths[] = $filepath;
             }
@@ -68,7 +70,7 @@ class SegnalazioneController extends Controller
             'is_resolved' => false,
         ]);
 
-        Mail::to(config('guasto_mail.admin_email', 'admin@comune.rieti.it'))->send(new ApprovalRequestMail($segnalazione, $duplicates));
+        $this->sendApprovalRequest($segnalazione, $duplicates);
 
         return response()->json([
             'message' => 'Segnalazione inviata con successo',
@@ -121,7 +123,7 @@ class SegnalazioneController extends Controller
 
         $segnalazione = Segnalazione::find($id);
 
-        if (!$segnalazione) {
+        if (! $segnalazione) {
             return response()->json(['error' => 'Segnalazione non trovata'], 404);
         }
 
@@ -130,9 +132,7 @@ class SegnalazioneController extends Controller
         $segnalazione->save();
 
         if ($request->status === 'approved' && $oldStatus !== 'approved') {
-            Mail::to(self::getEmailForTipo($segnalazione->tipo))->send(
-                new ApprovedNotificationMail($segnalazione)
-            );
+            $this->sendApprovedNotification($segnalazione);
         }
 
         return response()->json([
@@ -144,6 +144,95 @@ class SegnalazioneController extends Controller
     public static function getEmailForTipo(string $tipo): string
     {
         $config = config('guasto_mail');
+
         return $config[$tipo]['email'] ?? 'protocollo@comune.rieti.it';
+    }
+
+    private function sendApprovalRequest(Segnalazione $segnalazione, array $duplicates): void
+    {
+        $config = config('guasto_mail');
+        $tipo = $segnalazione->tipo;
+
+        if (! isset($config[$tipo])) {
+            $tipo = 'altro';
+        }
+
+        $emails = $config[$tipo]['emails'] ?? [];
+        $cc = $config[$tipo]['cc'] ?? [];
+
+        if (empty($emails)) {
+            $emails = ['protocollo@comune.rieti.it'];
+        }
+
+        $mail = new ApprovalRequestMail($segnalazione, $duplicates);
+        $mail = $mail->withReplyTo($config['admin_email'] ?? 'admin@comune.rieti.it');
+
+        if (! empty($cc)) {
+            $mail = $mail->cc($cc);
+        }
+
+        Mail::to($emails)->send($mail);
+
+        DB::transaction(function () use ($segnalazione, $emails, $cc) {
+            EmailResponseMessage::create([
+                'segnalazione_id' => $segnalazione->id,
+                'type' => 'sent',
+                'subject' => 'Nuova segnalazione da approvare',
+                'body' => $segnalazione->descrizione,
+                'external_message_id' => null,
+                'in_reply_to' => null,
+                'metadata' => [
+                    'to' => $emails,
+                    'cc' => $cc,
+                    'tipo' => $segnalazione->tipo,
+                ],
+                'sent_at' => now(),
+                'status' => 'sent',
+            ]);
+        });
+    }
+
+    private function sendApprovedNotification(Segnalazione $segnalazione): void
+    {
+        $config = config('guasto_mail');
+        $tipo = $segnalazione->tipo;
+
+        if (! isset($config[$tipo])) {
+            $tipo = 'altro';
+        }
+
+        $emails = $config[$tipo]['emails'] ?? [];
+        $cc = $config[$tipo]['cc'] ?? [];
+
+        if (empty($emails)) {
+            $emails = ['protocollo@comune.rieti.it'];
+        }
+
+        $mail = new ApprovedNotificationMail($segnalazione);
+        $mail = $mail->withReplyTo($config['admin_email'] ?? 'admin@comune.rieti.it');
+
+        if (! empty($cc)) {
+            $mail = $mail->cc($cc);
+        }
+
+        Mail::to($emails)->send($mail);
+
+        DB::transaction(function () use ($segnalazione, $emails, $cc) {
+            EmailResponseMessage::create([
+                'segnalazione_id' => $segnalazione->id,
+                'type' => 'sent',
+                'subject' => 'Segnalazione approvata',
+                'body' => $segnalazione->descrizione,
+                'external_message_id' => null,
+                'in_reply_to' => null,
+                'metadata' => [
+                    'to' => $emails,
+                    'cc' => $cc,
+                    'tipo' => $segnalazione->tipo,
+                ],
+                'sent_at' => now(),
+                'status' => 'sent',
+            ]);
+        });
     }
 }

@@ -17,6 +17,8 @@ class ApprovalRequestMail extends Mailable
 
     public array $duplicates;
 
+    public ?string $customReplyTo = null;
+
     public function __construct(Segnalazione $segnalazione, array $duplicates)
     {
         $this->segnalazione = $segnalazione;
@@ -25,9 +27,19 @@ class ApprovalRequestMail extends Mailable
 
     public function envelope(): Envelope
     {
+        $replyTo = $this->customReplyTo ?? config('mail.from.address');
+
         return new Envelope(
             subject: 'Nuova segnalazione da approvare',
+            replyTo: [$replyTo],
         );
+    }
+
+    public function withReplyTo(string $replyTo): self
+    {
+        $this->customReplyTo = $replyTo;
+
+        return $this;
     }
 
     public function content(): Content
