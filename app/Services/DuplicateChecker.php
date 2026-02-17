@@ -13,13 +13,19 @@ class DuplicateChecker
      * @param  float  $lat  Latitudine della segnalazione corrente
      * @param  float  $lng  Longitudine della segnalazione corrente
      * @param  float  $raggio  Raggio in metri (default 100)
+     * @param  int|null  $excludeId  ID da escludere dal controllo (per aggiornamenti)
      * @return array Array di segnalazioni simili o array vuoto
      */
-    public function check(string $tipo, float $lat, float $lng, float $raggio = 100): array
+    public function check(string $tipo, float $lat, float $lng, float $raggio = 100, ?int $excludeId = null): array
     {
-        $segnalazioni = Segnalazione::where('tipo', $tipo)
-            ->where('status', '!=', 'rejected')
-            ->get()
+        $query = Segnalazione::where('tipo', $tipo)
+            ->where('status', '!=', 'rejected');
+
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        $segnalazioni = $query->get()
             ->filter(function ($segnalazione) use ($lat, $lng, $raggio) {
                 $distanza = Segnalazione::haversineDistance(
                     $segnalazione->lat,

@@ -133,6 +133,14 @@
             color: #721c24;
         }
         
+        .geolocation-status .small {
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+        }
+        
         .duplicate-alert {
             background: #fff3cd;
             border: 1px solid #ffeaa7;
@@ -177,13 +185,21 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    <h1>Segnala un Guasto</h1>
+                    <h1 id="cityHeaderTitle">Segnala un Guasto</h1>
                     <p>Aiutaci a mantenere la città in condizioni sicure e pulite</p>
                 </div>
                 <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#faqModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
                     Come funziona?
                 </button>
+            </div>
+            
+            <!-- Come Funziona Info Box -->
+            <div class="mt-4 text-center">
+                <h6 id="faqTrigger" style="cursor: pointer; font-weight: 600; color: #dc3545;">
+                    Come funziona questa segnalazione?
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path d="M9 18l6-6-6-6"/></svg>
+                </h6>
             </div>
         </div>
     </header>
@@ -280,40 +296,6 @@
                         </div>
                     </form>
                 </div>
-                
-                <!-- Note informative -->
-                <div class="info-card card border-0 shadow-sm mt-4">
-                    <div class="card-body">
-                        <h5 class="card-title" style="font-family: 'Cinzel', serif;">Come funziona</h5>
-                        <hr>
-                        <div class="mb-3">
-                            <div class="d-flex align-items-start">
-                                <div class="flex-shrink-0">
-                                    <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1">Geolocalizzazione automatica</h6>
-                                    <p class="mb-0 text-muted small">La tua posizione viene rilevata per facilitare l'individuazione del guasto</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="d-flex align-items-start">
-                                <div class="flex-shrink-0">
-                                    <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line><line x1="12" y1="8" x2="12" y2="16"></line></svg>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1">Anonimato garantito</h6>
-                                    <p class="mb-0 text-muted small">Non è richiesto alcun account per inviare una segnalazione</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -349,6 +331,7 @@
                                 3. Invio e Monitoraggio
                             </h6>
                             <p>Conferma la segnalazione e clicca su "Invia Segnalazione". Riceverai una conferma. Potrai monitorare lo stato della tua segnalazione sulla <a href="{{ route('mappa') }}" class="text-primary text-decoration-underline">mappa pubblica</a>.</p>
+                            <p class="small text-muted mb-0">La tua segnalazione verrà inviata automaticamente ai destinatari configurati nel comune. Quando verrà approvata, riceverai una notifica via email.</p>
                         </div>
                         <div class="col-12">
                             <div class="alert alert-info mb-0">
@@ -394,6 +377,61 @@
         
         const rietiCenter = [42.4097, 12.8607];
         
+        // Haversine distance function in meters
+        function haversineDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371000; // Earth radius in meters
+            const φ1 = lat1 * Math.PI / 180;
+            const φ2 = lat2 * Math.PI / 180;
+            const Δφ = (lat2 - lat1) * Math.PI / 180;
+            const Δλ = (lng2 - lng1) * Math.PI / 180;
+            
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            
+            return R * c;
+        }
+        
+        // Reverse geocoding function using Nominatim API
+        async function fetchAddressFromCoords(lat, lng) {
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`);
+                const data = await response.json();
+                
+                if (data && data.address) {
+                    const addressParts = [
+                        data.address.road,
+                        data.address.house_number,
+                        data.address.city,
+                        data.address.postcode,
+                        data.address.country
+                    ].filter(part => part);
+                    
+                    const address = addressParts.join(', ');
+                    
+                    if (address) {
+                        const fullMessage = `Posizione rilevata: ${lat.toFixed(6)}, ${lng.toFixed(6)}<br><small>${address}</small>`;
+                        geolocationText.innerHTML = fullMessage;
+                        geolocationStatus.classList.add('has-address');
+                    } else {
+                        setGeoLocationStatus('ready', 'Posizione rilevata con successo');
+                    }
+                } else {
+                    setGeoLocationStatus('ready', 'Posizione rilevata con successo');
+                }
+            } catch (error) {
+                console.error('Errore nel reverse geocoding:', error);
+                setGeoLocationStatus('ready', 'Posizione rilevata con successo');
+            }
+        }
+        
+        // Set city name from config
+        const cityHeaderTitle = document.getElementById('cityHeaderTitle');
+        if (cityHeaderTitle) {
+            cityHeaderTitle.textContent = 'Segnala un Guasto - {{ config("city.name") }}';
+        }
+        
         const latInput = document.getElementById('latInput');
         const lngInput = document.getElementById('lngInput');
         const geolocationStatus = document.getElementById('geolocationStatus');
@@ -411,7 +449,18 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             setupEventListeners();
+            setupFAQTrigger();
         });
+        
+        function setupFAQTrigger() {
+            const faqTrigger = document.getElementById('faqTrigger');
+            if (faqTrigger) {
+                faqTrigger.addEventListener('click', function() {
+                    const modal = new bootstrap.Modal(document.getElementById('faqModal'));
+                    modal.show();
+                });
+            }
+        }
         
         function setupEventListeners() {
             descrizioneInput.addEventListener('input', function() {
@@ -476,7 +525,8 @@
                     latInput.value = userPosition.lat;
                     lngInput.value = userPosition.lng;
                     
-                    setGeoLocationStatus('ready', 'Posizione rilevata con successo');
+                    // Reverse geocoding to get address
+                    fetchAddressFromCoords(userPosition.lat, userPosition.lng);
                     
                     if (!map) {
                         initMap();
@@ -520,11 +570,8 @@
                     icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>';
             }
             
-            geolocationStatus.innerHTML = icon + ' <span id="geolocationText">' + message + '</span> ' +
-                '<button type="button" class="btn btn-sm btn-outline-primary ms-auto" id="getLocationBtn">' +
-                '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>' +
-                ' Aggiorna Posizione' +
-                '</button>';
+            // Use innerText for the message to avoid HTML injection
+            geolocationText.innerText = message;
             
             document.getElementById('getLocationBtn').addEventListener('click', function() {
                 requestGeoLocation();
@@ -562,16 +609,37 @@
         }
         
         function loadNearbyReports() {
-            const nearbyReports = [
-                { lat: 42.409, lng: 12.861, tipo: "Perdita d'acqua", descrizione: "Viale Europa, fronte civico 45" },
-                { lat: 42.410, lng: 12.859, tipo: "Buca stradale", descrizione: "Via San Pietro, prima curva" }
-            ];
-            
-            if (nearbyReports.length > 0) {
-                duplicatesFound = nearbyReports;
-                document.getElementById('duplicateCount').textContent = nearbyReports.length;
-                dupAlert.classList.add('show');
-            }
+            // Call API to get real nearby reports
+            fetch('/api/segnalazioni')
+                .then(response => response.json())
+                .then(data => {
+                    // Filter by same type within 100m using haversine
+                    const tipo = document.getElementById('tipo').value;
+                    
+                    duplicatesFound = data.data.filter(s => {
+                        if (tipo && s.tipo !== tipo) return false;
+                        
+                        const distance = haversineDistance(
+                            userPosition.lat,
+                            userPosition.lng,
+                            s.lat,
+                            s.lng
+                        );
+                        
+                        return distance <= 100;
+                    });
+
+                    if (duplicatesFound.length > 0) {
+                        document.getElementById('duplicateCount').textContent = duplicatesFound.length;
+                        dupAlert.classList.add('show');
+                    } else {
+                        dupAlert.classList.remove('show');
+                    }
+                })
+                .catch(error => {
+                    console.error('Errore nel caricamento duplicati:', error);
+                    dupAlert.classList.remove('show');
+                });
         }
         
         function handleFiles(files) {

@@ -154,7 +154,7 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    <h1>Segnalazioni Stradali - {{ config('city.name') }}</h1>
+                    <h1 id="cityTitle">Segnalazioni Stradali</h1>
                     <p>Visualizza e segnala problemi sulla viabilità urbana</p>
                 </div>
                 <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#faqModal">
@@ -277,7 +277,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                    <a href="{{ route('segnalazione.create') }}" class="btn btn-primary">
+                    <a href="{{ url('/') }}" class="btn btn-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
                         Segnala un Guasto
                     </a>
@@ -301,6 +301,12 @@
         
         const rietiCenter = [42.4097, 12.8607];
         
+        // Set city name from config
+        const cityTitle = document.getElementById('cityTitle');
+        if (cityTitle) {
+            cityTitle.textContent = 'Segnalazioni Stradali - {{ config("city.name") }}';
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             initMap();
             updateMap();
@@ -314,7 +320,7 @@
                 maxZoom: 19
             }).addTo(map);
             
-            markersLayer = L.layerGroup().addTo(map);
+            markersLayer = L.featureGroup().addTo(map);
         }
         
         function updateMap() {

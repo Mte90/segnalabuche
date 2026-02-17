@@ -13,12 +13,6 @@ Un'applicazione Laravel 11 per la segnalazione di problemi stradali.
 
 Questo progetto è pensato per comuni, città e province. Configura il tuo comune (ad esempio **Bugliano**) modificando `config/city.php`.
 
-### Installazione modulo SQLite
-
-```bash
-sudo apt-get install php8.5-sqlite3
-```
-
 ## Installazione
 
 1. Clona il repository
@@ -270,38 +264,6 @@ Per ricevere le risposte alle email inviate:
    - Metadata (from, to, date)
    - Timestamp di ricezione
 
-## Struttura del progetto
-
-```
-app/
-├── Http/Controllers/
-│   └── Api/
-│       └── SegnalazioneController.php
-├── Listeners/
-│   └── ProcessEmailResponses.php
-├── Models/
-│   ├── Segnalazione.php
-│   └── EmailResponseMessage.php
-└── Services/
-    └── DuplicateChecker.php
-database/
-├── migrations/
-│   └── 2026_02_17_081458_create_email_responses_table.php
-└── seeders/
-resources/
-├── views/
-│   ├── admin/
-│   │   └── segnalazioni.blade.php
-│   ├── mappa/
-│   │   └── index.blade.php
-│   ├── segnalazione/
-│   │   └── create.blade.php
-│   └── mail/
-│       ├── guasto_custom/     # Template personalizzabili (non versionati)
-│       ├── approval_request.blade.php
-│       └── approved_notification.blade.php
-```
-
 ## Template Email Personalizzabili (Git-Friendly)
 
 ### Problema
@@ -403,26 +365,3 @@ Le segnalazioni sono anonime; nessun dato personale dell'utente è memorizzato. 
 ## Licenza
 
 GPLv3 - vedi il file [LICENSE](LICENSE) per i dettagli.
-
-## Contributi
-
-Fork -> Branch -> PR
-
-## Supporto
-
-Issue su GitHub
-
-### Struttura guasto_custom
-
-```bash
-resources/views/mail/guasto_custom/
-├── perdita_acqua.blade.php
-├── tombino.blade.php
-├── buca.blade.php
-├── illuminazione.blade.php
-└── altro.blade.php
-```
-
----
-
-Progetto personale
