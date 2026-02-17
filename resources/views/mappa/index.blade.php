@@ -114,6 +114,45 @@
             font-weight: 600;
         }
         
+        .legend {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: #495057;
+        }
+        
+        /* Stats Bar */
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem 0;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .stats-container .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stats-container .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .stats-container .stat-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .stats-container .stat-item:hover .stat-number {
+            color: #c82333;
+        }
+        
         .info-card p {
             margin-bottom: 0.5rem;
             color: #495057;
@@ -197,6 +236,28 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
                         Reset Filtri
                     </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Bar (clickable to filter) -->
+        <div class="container py-2">
+            <div class="stats-container">
+                <div class="stat-item" onclick="filterByStatus('pending')">
+                    <div class="stat-number" id="pendingCount">0</div>
+                    <div class="stat-label">In sospeso</div>
+                </div>
+                <div class="stat-item" onclick="filterByStatus('approved')">
+                    <div class="stat-number" id="approvedCount">0</div>
+                    <div class="stat-label">Approvato</div>
+                </div>
+                <div class="stat-item" onclick="filterByStatus('rejected')">
+                    <div class="stat-number" id="rejectedCount">0</div>
+                    <div class="stat-label">Rifiutato</div>
+                </div>
+                <div class="stat-item" onclick="filterWithPhotos()">
+                    <div class="stat-number" id="withPhotosCount">0</div>
+                    <div class="stat-label">Con foto</div>
                 </div>
             </div>
         </div>
@@ -310,7 +371,29 @@
         document.addEventListener('DOMContentLoaded', function() {
             initMap();
             updateMap();
+            updateStats();
         });
+        
+        function updateStats() {
+            // Set the stats counts from PHP variables
+            document.getElementById('pendingCount').textContent = {{ $pendingCount ?? 0 }};
+            document.getElementById('approvedCount').textContent = {{ $approvedCount ?? 0 }};
+            document.getElementById('rejectedCount').textContent = {{ $rejectedCount ?? 0 }};
+            document.getElementById('withPhotosCount').textContent = {{ $withPhotosCount ?? 0 }};
+        }
+        
+        function filterByStatus(status) {
+            const select = document.getElementById('filterStatus');
+            if (select) {
+                select.value = status;
+                updateMap();
+            }
+        }
+        
+        function filterWithPhotos() {
+            // Placeholder function
+            // Could implement a filter to show segnalazioni with photos only
+        }
         
         function initMap() {
             map = L.map('map').setView(rietiCenter, 14);

@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'name' => env('CITY_NAME', 'Rieti'),
+    'name' => env('CITY_NAME', 'Bugliano'),
 ];

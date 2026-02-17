@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Pannello Admin - Segnalazioni - {{ config('city.name') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -129,6 +130,7 @@
         
         .btn-approve {
             background: var(--success-color);
+            color: white;
             border: none;
             border-radius: 6px;
             padding: 0.5rem 1.25rem;
@@ -143,6 +145,7 @@
         
         .btn-reject {
             background: var(--danger-color);
+            color: white;
             border: none;
             border-radius: 6px;
             padding: 0.5rem 1.25rem;
@@ -203,6 +206,7 @@
         .btn-confirm-approve {
             background: var(--success-color);
             border: none;
+            color: white;
         }
         
         .btn-confirm-approve:hover {
@@ -212,6 +216,7 @@
         .btn-confirm-reject {
             background: var(--danger-color);
             border: none;
+            color: white;
         }
         
         .btn-confirm-reject:hover {

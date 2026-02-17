@@ -7,9 +7,9 @@ Questo documento spiega come configurare Segnala un Guasto per il tuo comune.
 Modifica il file `config/city.php` per impostare il nome della città:
 
 ```php
-return [
-    'name' => 'Rieti',
-];
+    return [
+        'name' => 'Bugliano',
+    ];
 ```
 
 ## Configurazione email per guasti
@@ -23,8 +23,8 @@ Per maggiori informazioni sulla personalizzazione dei template, vedere la sezion
 return [
     // ... altre tipologie
     'nuova_tipologia' => [
-        'emails' => ['nuova@comune.rieti.it'],
-        'cc' => ['cc@comune.rieti.it'],
+        'emails' => ['nuova@comune.bugliano.it'],
+        'cc' => ['cc@comune.bugliano.it'],
         'template' => 'nuova_tipologia', // Opzionale
     ],
 ];
@@ -85,9 +85,9 @@ Il file `config/guasto_mail.php` supporta sia template di default che custom:
 
 ```php
 return [
-    'admin_email' => 'admin@comune.rieti.it',
+    'admin_email' => 'admin@comune.bugliano.it',
     'perdita d\'acqua' => [
-        'emails' => ['acqua@comune.rieti.it'],
+        'emails' => ['acqua@comune.bugliano.it'],
         'cc' => [],
         'template' => 'perdita_acqua',  // Usa custom se esiste, altrimenti default
     ],
@@ -116,7 +116,7 @@ vi resources/views/mail/guasto_custom/perdita_acqua.blade.php
 3. **Aggiornare la configurazione** in `config/guasto_mail.php`:
 ```php
 'perdita d\'acqua' => [
-    'emails' => ['acqua@comune.rieti.it'],
+    'emails' => ['acqua@comune.bugliano.it'],
     'cc' => [],
     'template' => 'mail.guasto_custom.perdita_acqua',  // ← nota _custom
 ],
@@ -144,7 +144,7 @@ vi resources/views/mail/guasto_custom/perdita_acqua.blade.php
 return [
     // ... altre tipologie
     'nuova_tipologia' => [
-        'emails' => ['nuova@comune.rieti.it'],
+        'emails' => ['nuova@comune.bugliano.it'],
         'cc' => [],
         'template' => 'mail.guasto.nuova_tipologia', // Opzionale
     ],

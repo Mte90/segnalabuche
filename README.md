@@ -133,7 +133,7 @@ php artisan admin:create
 Per personalizzare le credenziali:
 
 ```bash
-php artisan admin:create "Nome Admin" "admin@comune.rieti.it" "la_tua_password"
+php artisan admin:create "Nome Admin" "admin@comune.bugliano.it" "la_tua_password"
 ```
 
 #### Opzione 2: Creazione tramite Seeder (solo sviluppo)
@@ -146,7 +146,7 @@ php artisan db:seed --class=CreateAdminUserSeeder
 
 L'utente creato avrà:
 - Nome: Admin
-- Email: admin@comune.rieti.it
+- Email: admin@comune.bugliano.it
 - Password: admin
 
 ### Accesso al pannello
@@ -207,14 +207,9 @@ resources/views/mail/
 Il file `config/guasto_mail.php` supporta sia template di default che custom:
 
 ```php
-return [
-    'admin_email' => 'admin@comune.rieti.it',
-    'perdita d\'acqua' => [
-        'email' => 'acqua@comune.rieti.it',
-        'template' => 'perdita_acqua',  // Usa custom se esiste, altrimenti default
-    ],
-    // ...
-];
+    return [
+        'name' => 'Bugliano',
+    ];
 ```
 
 **Logica di caricamento:**
@@ -238,7 +233,7 @@ vi resources/views/mail/guasto_custom/perdita_acqua.blade.php
 3. **Aggiornare la configurazione** in `config/guasto_mail.php`:
 ```php
 'perdita d\'acqua' => [
-    'email' => 'acqua@comune.rieti.it',
+    'emails' => ['acqua@comune.bugliano.it'],
     'template' => 'mail.guasto_custom.perdita_acqua',  // ← nota _custom
 ],
 ```
@@ -269,7 +264,7 @@ vi resources/views/mail/guasto_custom/perdita_acqua.blade.php
 return [
     // ... altre tipologie
     'nuova_tipologia' => [
-        'email' => 'nuova@comune.rieti.it',
+        'emails' => ['nuova@comune.bugliano.it'],
         'template' => 'mail.guasto.nuova_tipologia', // Opzionale
     ],
 ];
