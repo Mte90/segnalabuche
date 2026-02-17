@@ -5,8 +5,9 @@
  * Consolidated and optimized CSS
  * 
  * Source Files:
- * - resources/views/admin/segnalazioni.blade.php (lines 7-213)
- * - resources/views/mappa/index.blade.php (lines 11-168)
+ * - resources/views/segnalazione/create.blade.php (lines 11-155)
+ * - resources/views/admin/segnalazioni.blade.php (full file)
+ * - resources/views/mappa/index.blade.php (lines 11-173)
  * 
  * Last Extracted: Tue Feb 17 2026
  */
@@ -229,8 +230,14 @@
 }
 
 /* ========================================
-   MAPPA STYLES - index.blade.php
-   ======================================== */
+    MAPPA STYLES - index.blade.php
+    ======================================== */
+
+/* Map Wrapper (80% width centered) */
+.map-wrapper {
+    max-width: 80%;
+    margin: 0 auto;
+}
 
 /* Map Container */
 .map-container {
@@ -371,4 +378,108 @@
 /* Global stat-item (merged) */
 .stat-item {
     cursor: pointer;
+}
+
+/* ========================================
+    SEGNA LAZIONE CREATE STYLES
+    ======================================== */
+
+/* Section Card (create view specific) */
+.section-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.section-card:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+/* Geolocation Status */
+.geolocation-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.geolocation-status.ready {
+    background: #d4edda;
+    color: #155724;
+}
+
+.geolocation-status.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.geolocation-status.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.geolocation-status .small {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+
+/* File Input Container */
+.file-input-container {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-input-container:hover {
+    border-color: var(--primary-color);
+    background: #fff5f5;
+}
+
+.file-input-container .file-icon {
+    font-size: 3rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.75rem;
+}
+
+/* Duplicate Alert */
+.duplicate-alert {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: none;
+}
+
+.duplicate-alert.show {
+    display: block;
+}
+
+.duplicate-alert .alert-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Leaflet Container */
+.leaflet-container {
+    height: 300px;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
 }

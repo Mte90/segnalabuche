@@ -20,7 +20,7 @@
                       @if(!empty($segnalazione->foto))
                           <p class="extra-info">
                               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                              <button type="button" class="btn btn-sm btn-outline-primary" onclick="showPhotos({!! htmlspecialchars(json_encode($segnalazione->foto), ENT_QUOTES, 'UTF-8') !!}, '{{ $segnalazione->tipo }}')">
+                              <button type="button" class="btn btn-sm btn-outline-primary" onclick="showPhotos(@js($segnalazione->foto), '{{ $segnalazione->tipo }}')">
                                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><eye></eye></svg>
                                  Visualizza {{ count($segnalazione->foto) }} foto{{ count($segnalazione->foto) > 1 ? 's' : '' }}
                              </button>
