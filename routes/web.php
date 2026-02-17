@@ -80,6 +80,41 @@ Route::get('/admin/segnalazioni/export', function () {
     return response()->stream($callback, 200, $headers);
 })->name('admin.segnalazioni.export');
 
+Route::get('/admin/segnalazioni', function () {
+    $status = request('status', 'pending');
+    $tipo = request('tipo');
+    $ajax = request('ajax', false);
+    
+    $query = Segnalazione::query();
+    if ($status !== 'all' && $status !== '') {
+        $query->where('status', $status);
+    }
+    if ($tipo) {
+        $query->where('tipo', $tipo);
+    }
+    
+    $segnalazioni = $query->get();
+    
+    $viewData = [
+        'segnalazioni' => $segnalazioni,
+        'count' => Segnalazione::count(),
+        'pendingCount' => Segnalazione::where('status', 'pending')->count(),
+        'approvedCount' => Segnalazione::where('status', 'approved')->count(),
+        'rejectedCount' => Segnalazione::where('status', 'rejected')->count(),
+        'currentStatus' => $status,
+        'currentTipo' => $tipo,
+    ];
+    
+    if ($ajax) {
+        return response()->json([
+            'html' => view('admin._list', $viewData)->render(),
+            'count' => $segnalazioni->count(),
+        ]);
+    }
+    
+    return view('admin.segnalazioni', $viewData);
+})->name('admin.segnalazioni');
+
 Route::put('/admin/segnalazioni/{id}/status', function (Illuminate\Http\Request $request, $id) {
     $request->validate([
         'status' => 'required|string|in:pending,approved,rejected',
