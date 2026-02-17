@@ -149,9 +149,9 @@ L'utente creato avrà:
 - Email: admin@comune.bugliano.it
 - Password: admin
 
-#### Opzione 3: Accesso via SSH (alternativa per produzione)
+#### Opzione 3: SSH Alternative (senza Artisan)
 
-Se non hai accesso SSH al server o non puoi usare Artisan, puoi creare l'utente admin direttamente nel database:
+Se non puoi eseguire `php artisan admin:create` (ad esempio su un server di produzione senza accesso SSH per gli sviluppatori), puoi creare l'utente admin direttamente nel database:
 
 1. Accedi al database SQLite:
 ```bash
@@ -169,7 +169,7 @@ VALUES ('Admin', 'admin@comune.bugliano.it', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoE
 .quit
 ```
 
-> Nota: La password `admin` è hashata con bcrypt. Il hash utilizzato è `$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi`.
+> **Attenzione**: La password `admin` è hashata con bcrypt. Il hash utilizzato è `$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi`. Per motivi di sicurezza, in produzione modifica la password non appena effettuato il primo accesso.
 
 ### Accesso al pannello
 

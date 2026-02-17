@@ -1,0 +1,374 @@
+/**
+ * SegnalaBuche - Main CSS File
+ * ============================
+ * Extracted from Laravel Blade templates
+ * Consolidated and optimized CSS
+ * 
+ * Source Files:
+ * - resources/views/admin/segnalazioni.blade.php (lines 7-213)
+ * - resources/views/mappa/index.blade.php (lines 11-168)
+ * 
+ * Last Extracted: Tue Feb 17 2026
+ */
+
+/* ========================================
+   CSS Variables (from :root)
+   ======================================== */
+:root {
+    --primary-color: #dc3545;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+}
+
+/* ========================================
+   ADMIN STYLES - segnalazioni.blade.php
+   ======================================== */
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background: white;
+    border-bottom: 2px solid #e9ecef;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Status Badges */
+.status-pending {
+    background: var(--warning-color);
+    color: #856404;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-approved {
+    background: var(--success-color);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-rejected {
+    background: var(--secondary-color);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Segnalazione Items */
+.segnalazione-item {
+    padding: 1.25rem;
+    border-bottom: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.segnalazione-item:hover {
+    background: #f8f9fa;
+}
+
+.segnalazione-item:last-child {
+    border-bottom: none;
+}
+
+.segnalazione-info h6 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.segnalazione-info p {
+    margin-bottom: 0.25rem;
+    color: #495057;
+    font-size: 0.95rem;
+}
+
+.segnalazione-info .extra-info {
+    color: #6c757d;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.segnalazione-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* Action Buttons */
+.btn-approve {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.25rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-approve:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.btn-reject {
+    background: var(--danger-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.25rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-reject:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+.btn-cancel {
+    background: var(--secondary-color);
+    border: none;
+}
+
+.btn-cancel:hover {
+    background: #5a6268;
+}
+
+/* Confirm Modal Buttons */
+.btn-confirm-approve {
+    background: var(--success-color);
+    border: none;
+    color: white;
+}
+
+.btn-confirm-approve:hover {
+    background: #218838;
+}
+
+.btn-confirm-reject {
+    background: var(--danger-color);
+    border: none;
+    color: white;
+}
+
+.btn-confirm-reject:hover {
+    background: #c82333;
+}
+
+/* No Data State */
+.no-data {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+
+.no-data svg {
+    font-size: 3rem;
+    color: #dee2e6;
+    margin-bottom: 1rem;
+}
+
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    justify-content: space-around;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 1.5rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.stat-item:hover .stat-number {
+    color: #c82333;
+}
+
+/* Modal Footer */
+.modal-footer {
+    border-top: none;
+}
+
+/* ========================================
+   MAPPA STYLES - index.blade.php
+   ======================================== */
+
+/* Map Container */
+.map-container {
+    flex: 1;
+    padding: 0;
+    position: relative;
+}
+
+#map {
+    height: calc(100vh - 180px);
+    width: 100%;
+    border-radius: 0;
+}
+
+/* Filters Panel */
+.filters-panel {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+    margin-bottom: 1rem;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Status Badges (Merged from admin) */
+.status-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Marker Icons */
+.marker-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Info Card */
+.info-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.info-card h5 {
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.info-card p {
+    margin-bottom: 0.5rem;
+    color: #495057;
+}
+
+.info-card .badge {
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Legend (Merged from mappa) */
+.legend {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.color-pending {
+    background: var(--warning-color);
+}
+
+.color-approved {
+    background: var(--success-color);
+}
+
+.color-rejected {
+    background: var(--secondary-color);
+}
+
+/* Stats Container (Merged with stat-item) */
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem 0;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+}
+
+.stats-container .stat-item {
+    text-align: center;
+    flex: 1;
+}
+
+.stats-container .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.stats-container .stat-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.stats-container .stat-item:hover .stat-number {
+    color: #c82333;
+}
+
+/* Global stat-item (merged) */
+.stat-item {
+    cursor: pointer;
+}

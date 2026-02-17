@@ -23,15 +23,62 @@ Route::get('/mappa', function () {
     ]);
 })->name('mappa');
 
-Route::get('/admin/segnalazioni', function () {
-    return view('admin.segnalazioni', [
-        'segnalazioni' => Segnalazione::where('status', 'pending')->get(),
-        'count' => Segnalazione::count(),
-        'pendingCount' => Segnalazione::where('status', 'pending')->count(),
-        'approvedCount' => Segnalazione::where('status', 'approved')->count(),
-        'rejectedCount' => Segnalazione::where('status', 'rejected')->count(),
-    ]);
-})->name('admin.segnalazioni');
+Route::get('/admin/segnalazioni/export', function () {
+    $status = request('status');
+    $tipo = request('tipo');
+    
+    $query = Segnalazione::query();
+    if ($status !== 'all' && $status !== '') {
+        $query->where('status', $status);
+    }
+    if ($tipo) {
+        $query->where('tipo', $tipo);
+    }
+    
+    $segnalazioni = $query->get();
+    
+    $fileName = 'segnalazioni_' . now()->format('Ymd_His') . '.csv';
+    
+    $headers = [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+    ];
+    
+    $callback = function () use ($segnalazioni) {
+        $file = fopen('php://output', 'w');
+        
+        // Write BOM for UTF-8
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        
+        // Write header row
+        fputcsv($file, ['ID', 'Tipo', 'Descrizione', 'Data', 'Stato', 'Lat', 'Lng', 'Foto']);
+        
+        // Write data rows
+        foreach ($segnalazioni as $seg) {
+            $statusLabel = match($seg->status) {
+                'pending' => 'In sospeso',
+                'approved' => 'Approvato',
+                'rejected' => 'Rifiutato',
+                default => $seg->status,
+            };
+            
+            fputcsv($file, [
+                $seg->id,
+                $seg->tipo,
+                $seg->descrizione,
+                $seg->created_at->format('d/m/Y H:i'),
+                $statusLabel,
+                $seg->lat,
+                $seg->lng,
+                !empty($seg->foto) ? implode('|', $seg->foto) : '',
+            ]);
+        }
+        
+        fclose($file);
+    };
+    
+    return response()->stream($callback, 200, $headers);
+})->name('admin.segnalazioni.export');
 
 Route::put('/admin/segnalazioni/{id}/status', function (Illuminate\Http\Request $request, $id) {
     $request->validate([
