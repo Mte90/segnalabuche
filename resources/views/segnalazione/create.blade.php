@@ -9,23 +9,6 @@
 
 @section('content')
     <div class="container py-5">
-        <!-- Stats Box (Filter Box simplified) -->
-        <div class="filter-box mb-4">
-            <div class="stats-container">
-                <div class="stat-item" onclick="window.location.href='/mappa'">
-                    <div class="stat-number" id="pendingCount">{{ $pendingCount ?? 0 }}</div>
-                    <div class="stat-label">In sospeso</div>
-                </div>
-                <div class="stat-item" onclick="window.location.href='/mappa'">
-                    <div class="stat-number" id="approvedCount">{{ $approvedCount ?? 0 }}</div>
-                    <div class="stat-label">Approvato</div>
-                </div>
-                <div class="stat-item" onclick="window.location.href='/mappa'">
-                    <div class="stat-number" id="rejectedCount">{{ $rejectedCount ?? 0 }}</div>
-                    <div class="stat-label">Rifiutato</div>
-                </div>
-            </div>
-        </div>
         
         <div class="row justify-content-center">
             <div class="col-lg-8">

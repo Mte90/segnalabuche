@@ -94,12 +94,12 @@ Route::middleware('admin')->group(function () {
     })->name('admin.segnalazioni.export');
 
     Route::get('/admin/segnalazioni', function () {
-        $status = request('status', 'pending');
+        $status = request('status', null);
         $tipo = request('tipo');
         $ajax = request('ajax', false);
 
         $query = Segnalazione::query();
-        if ($status !== 'all' && $status !== '') {
+        if ($status !== null && $status !== '' && $status !== 'all') {
             $query->where('status', $status);
         }
         if ($tipo) {

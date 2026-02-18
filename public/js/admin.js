@@ -11,12 +11,13 @@
     let editMap = null;
     let editMarker = null;
     
+    // Initialize modals immediately
+    confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    photosModal = new bootstrap.Modal(document.getElementById('photosModal'));
+    editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    
     document.addEventListener('DOMContentLoaded', function() {
-        confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-        deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        photosModal = new bootstrap.Modal(document.getElementById('photosModal'));
-        editModal = new bootstrap.Modal(document.getElementById('editModal'));
-        
         document.getElementById('deleteSegnalazioneId').addEventListener('click', function() {
             deleteSegnalazione(document.getElementById('deleteSegnalazioneId').value);
         });
@@ -246,10 +247,18 @@
             photosList.innerHTML = photosHtml;
         }
         
+        const lat = parseFloat(document.getElementById('edit_lat').value);
+        const lng = parseFloat(document.getElementById('edit_lng').value);
+        
         editModal.show();
         
         setTimeout(() => {
-            loadMapInEditModal();
+            if (!isNaN(lat) && !isNaN(lng)) {
+                loadMapInEditModal();
+                if (editMap) {
+                    editMap.invalidateSize();
+                }
+            }
         }, 100);
     };
     
@@ -301,10 +310,6 @@
     };
     
     function loadMapInEditModal() {
-        if (!editModal || !editModal._element || !editModal._element.classList.contains('show')) {
-            return;
-        }
-        
         const mapContainer = document.getElementById('editMap');
         if (!mapContainer) return;
         
@@ -322,7 +327,7 @@
             editMarker = null;
         }
         
-        editMap = L.map('editMap').setView([lat, lng], 15);
+        editMap = L.map('editMap', { zoomControl: true }).setView([lat, lng], 15);
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors',

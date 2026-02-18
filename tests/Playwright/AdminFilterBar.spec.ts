@@ -18,7 +18,7 @@ test.describe("Map page filter box", () => {
     await expect(filterBox).toBeVisible();
 
     const stats = filterBox.locator(".stats-container .stat-item");
-    await expect(stats).toHaveCount(3);
+    await expect(stats).toHaveCount(2);
     const firstStat = stats.first();
     await expect(firstStat).toBeVisible();
     await expect(firstStat).toContainText("In sospeso");

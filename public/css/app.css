@@ -240,8 +240,22 @@
     border-top: none;
 }
 
+.card-body .row.g-3 .form-select,
+.card-body .row.g-3 .form-control,
+.card-body .row.g-3 .btn {
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.card-body .row.g-3 select.form-select {
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 2.5rem;
+}
+
 /* ========================================
-    MAPPA STYLES - index.blade.php
+    MAPPA STYLES
     ======================================== */
 
 /* Map Wrapper (80% width centered) */
@@ -531,6 +545,12 @@
 
 .filters-panel .form-select,
 .filters-panel .form-control {
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.filters-panel .btn {
     min-height: 2.5rem;
     display: flex;
     align-items: center;

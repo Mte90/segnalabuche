@@ -35,7 +35,7 @@
                     <div class="col-md-2">
                         <label class="form-label">Stato</label>
                         <select class="form-select" id="adminFilterStatus">
-                            <option value="">Tutti</option>
+                            <option value="all">Tutti</option>
                             <option value="pending">In sospeso</option>
                             <option value="approved">Approvato</option>
                             <option value="rejected">Rifiutato</option>
@@ -74,7 +74,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <span>Segnalazioni in sospeso</span>
+                    <span>{{ $currentStatus === '' ? 'Tutte le segnalazioni' : ($currentStatus === 'pending' ? 'Segnalazioni in sospeso' : ($currentStatus === 'approved' ? 'Segnalazioni approvate' : 'Segnalazioni rifiutate')) }}</span>
                     <span class="badge bg-primary">{{ $segnalazioni->count() ?? 0 }}</span>
                 </div>
             </div>

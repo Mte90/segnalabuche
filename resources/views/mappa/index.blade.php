@@ -21,10 +21,6 @@
                     <div class="stat-number" id="approvedCount">{{ $approvedCount ?? 0 }}</div>
                     <div class="stat-label">Approvato</div>
                 </div>
-                <div class="stat-item" onclick="filterByStatus('rejected')">
-                    <div class="stat-number" id="rejectedCount">{{ $rejectedCount ?? 0 }}</div>
-                    <div class="stat-label">Rifiutato</div>
-                </div>
             </div>
             
             <!-- Filter Panel -->
