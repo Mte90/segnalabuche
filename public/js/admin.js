@@ -288,6 +288,16 @@
             return;
         }
         
+        if (dati.lat < -90 || dati.lat > 90) {
+            alert('La latitudine deve essere compresa tra -90 e 90');
+            return;
+        }
+        
+        if (dati.lng < -180 || dati.lng > 180) {
+            alert('La longitudine deve essere compresa tra -180 e 180');
+            return;
+        }
+        
         fetch(`/admin/segnalazioni/${id}`, {
             method: 'PUT',
             headers: {

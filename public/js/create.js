@@ -317,10 +317,25 @@
             return false;
         }
         
+        const lat = parseFloat(latInput.value);
+        const lng = parseFloat(lngInput.value);
+        
         if (!latInput.value || !lngInput.value) {
             e.preventDefault();
             alert('Si prega di consentire la geolocalizzazione per inviare la segnalazione');
             requestGeoLocation();
+            return false;
+        }
+        
+        if (isNaN(lat) || lat < -90 || lat > 90) {
+            e.preventDefault();
+            alert('La latitudine deve essere un numero tra -90 e 90');
+            return false;
+        }
+        
+        if (isNaN(lng) || lng < -180 || lng > 180) {
+            e.preventDefault();
+            alert('La longitudine deve essere un numero tra -180 e 180');
             return false;
         }
         

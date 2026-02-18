@@ -20,6 +20,7 @@ class CreateAdminUser extends Command
 
         if (User::where('email', $email)->exists()) {
             $this->error("User with email {$email} already exists.");
+
             return self::FAILURE;
         }
 
@@ -27,9 +28,10 @@ class CreateAdminUser extends Command
             'name' => $name,
             'email' => $email,
             'password' => Hash::make($password),
+            'is_admin' => true,
         ]);
 
-        $this->info("Admin user created successfully!");
+        $this->info('Admin user created successfully!');
         $this->info("Email: {$email}");
         $this->info("Password: {$password}");
 
