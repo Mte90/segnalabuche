@@ -71,37 +71,42 @@
                 </div>
             </div>
             
-            <!-- Map Layout -->
-            <div class="map-wrapper">
+        <!-- Map Layout -->
+        <div class="map-wrapper">
             <!-- Filter Box Container with How It Works link -->
             <div class="filter-box">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="mb-0"><strong>Legenda</strong></h6>
+                    <h6 class="mb-0"><strong>Legenda e informazioni</strong></h6>
                     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#howItWorksModal">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
                         Come funziona
                     </button>
                 </div>
-                <div class="legend">
-                    <div class="legend-item">
-                        <div class="legend-color color-pending"></div>
-                        <span>In sospeso</span>
+                <div class="row align-items-start g-3">
+                    <div class="col-md-8">
+                        <div class="legend">
+                            <div class="legend-item">
+                                <div class="legend-color color-pending"></div>
+                                <span>In sospeso</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color color-approved"></div>
+                                <span>Approvato</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color color-rejected"></div>
+                                <span>Rifiutato</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="legend-item">
-                        <div class="legend-color color-approved"></div>
-                        <span>Approvato</span>
+                    <div class="col-md-4">
+                        <div class="info-card h-100">
+                            <h6 class="mb-2"><strong>Informazioni</strong></h6>
+                            <p class="mb-1"><strong>In sospeso:</strong> Segnalazioni in attesa di approvazione</p>
+                            <p class="mb-1"><strong>Approvato:</strong> Segnalazioni confermate e visibili</p>
+                            <p class="mb-0"><strong>Rifiutato:</strong> Segnalazioni non confermate</p>
+                        </div>
                     </div>
-                    <div class="legend-item">
-                        <div class="legend-color color-rejected"></div>
-                        <span>Rifiutato</span>
-                    </div>
-                </div>
-                <!-- Info Box next to legend -->
-                <div class="info-card mt-3">
-                    <h6 class="mb-2"><strong>Informazioni</strong></h6>
-                    <p class="mb-1"><strong>In sospeso:</strong> Segnalazioni in attesa di approvazione</p>
-                    <p class="mb-1"><strong>Approvato:</strong> Segnalazioni confermate e visibili</p>
-                    <p class="mb-0"><strong>Rifiutato:</strong> Segnalazioni non confermate</p>
                 </div>
             </div>
             

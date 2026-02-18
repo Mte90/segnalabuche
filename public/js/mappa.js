@@ -74,13 +74,13 @@
         const icons = {
             pending: L.divIcon({
                 className: 'custom-div-icon',
-                html: "<div class='marker-icon' style='background: var(--warning-color); width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);'>?</div>",
+                html: "<div class='marker-icon' style='background: var(--orange); width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);'>?</div>",
                 iconSize: [36, 36],
                 iconAnchor: [18, 18]
             }),
             approved: L.divIcon({
                 className: 'custom-div-icon',
-                html: "<div class='marker-icon' style='background: var(--success-color); width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);'>✔</div>",
+                html: "<div class='marker-icon' style='background: var(--emerald); width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);'>✔</div>",
                 iconSize: [36, 36],
                 iconAnchor: [18, 18]
             }),

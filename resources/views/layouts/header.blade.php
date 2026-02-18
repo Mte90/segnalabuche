@@ -15,17 +15,17 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{{ url('/') }}">Segnala</a>
+                    <a class="nav-link @if(request()->path() == '/') active @endif" aria-current="page" href="{{ url('/') }}">Segnala</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{{ url('/mappa') }}">Mappa</a>
+                    <a class="nav-link @if(request()->path() == 'mappa' || request()->path() == 'mappa/') active @endif" aria-current="page" href="{{ url('/mappa') }}">Mappa</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/segnalazioni') }}">Admin</a>
+                    <a class="nav-link @if(request()->is('admin/*')) active @endif" href="{{ url('/admin/segnalazioni') }}">Admin</a>
                 </li>
                 @if(auth()->check())
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}"
+                        <a class="nav-link @if(request()->path() == 'logout') active @endif" href="{{ url('/') }}"
                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             Logout
                         </a>

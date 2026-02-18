@@ -8,6 +8,8 @@
     let segnalazioneId = null;
     let newStatus = null;
     let currentPhotos = [];
+    let editMap = null;
+    let editMarker = null;
     
     document.addEventListener('DOMContentLoaded', function() {
         confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
@@ -187,12 +189,20 @@
                     badge.textContent = data.count;
                 }
                 
+                const cardTitle = document.querySelector('.card-header > span');
+                const statusText = status ? (status === 'pending' ? 'In sospeso' : status === 'approved' ? 'Approvate' : 'Rifiutate') : 'In sospeso';
+                if (cardTitle) {
+                    cardTitle.textContent = statusText;
+                }
+                
                 if (data.stats) {
                     document.getElementById('totalCount').textContent = data.stats.total ?? '';
                     document.getElementById('pendingCount').textContent = data.stats.pending ?? '';
                     document.getElementById('approvedCount').textContent = data.stats.approved ?? '';
                     document.getElementById('rejectedCount').textContent = data.stats.rejected ?? '';
                 }
+                
+                loadMapInEditModal();
             })
             .catch(error => {
                 console.error('Errore nel caricamento AJAX:', error);
