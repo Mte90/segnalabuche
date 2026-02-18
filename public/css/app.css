@@ -1,16 +1,8 @@
-/**
- * SegnalaBuche - Main CSS File
- * ============================
- * Extracted from Laravel Blade templates
- * Consolidated and optimized CSS
- * 
- * Source Files:
- * - resources/views/segnalazione/create.blade.php (lines 11-155)
- * - resources/views/admin/segnalazioni.blade.php (full file)
- * - resources/views/mappa/index.blade.php (lines 11-173)
- * 
- * Last Extracted: Tue Feb 17 2026
- */
+body {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
 
 /* ========================================
    CSS Variables (from :root)

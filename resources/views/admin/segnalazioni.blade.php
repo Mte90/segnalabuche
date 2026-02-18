@@ -53,15 +53,15 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <button class="btn btn-primary" onclick="updateAdminMap()">
+                        <button class="btn btn-primary d-inline-block me-2" onclick="updateAdminMap()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                             Filtra
                         </button>
-                        <button class="btn btn-outline-secondary" onclick="resetAdminFilters()">
+                        <button class="btn btn-outline-secondary d-inline-block me-2" onclick="resetAdminFilters()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
                             Reset
                         </button>
-                        <a href="{{ route('admin.segnalazioni.export', ['status' => $currentStatus, 'tipo' => $currentTipo]) }}" class="btn btn-success">
+                        <a href="{{ route('admin.segnalazioni.export', ['status' => $currentStatus, 'tipo' => $currentTipo]) }}" class="btn btn-success d-inline-block me-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                             Esporta CSV
                         </a>

@@ -47,22 +47,17 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <button class="btn btn-primary" onclick="updateMap()">
+                            <button class="btn btn-primary d-inline-block me-2" onclick="updateMap()">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                                 Aggiorna Mappa
                             </button>
-                            <button class="btn btn-outline-secondary" onclick="resetFilters()">
+                            <button class="btn btn-outline-secondary d-inline-block me-2" onclick="resetFilters()">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
                                 Reset Filtri
                             </button>
                         </div>
                         
-                        <div class="col-md-6 text-start">
-                            <button class="btn btn-sm btn-outline-success" id="manualPositionToggle">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                                Imposta Posizione Manuale
-                            </button>
-                        </div>
+
                     </div>
                 </div>
             </div>

@@ -15,17 +15,19 @@ class DatabaseSeeder extends Seeder
     {
         $adminEmail = 'admin@comune.bugliano.it';
 
-        if (! User::where('email', $adminEmail)->exists()) {
-            User::factory()->create([
+        $admin = User::where('email', $adminEmail)->first();
+        if (! $admin) {
+            $admin = User::create([
                 'name' => 'Admin',
                 'email' => $adminEmail,
                 'password' => bcrypt('admin'),
+                'is_admin' => true
             ]);
         }
 
         // Create sample segnalazioni with various statuses
         // Placeholder images from placehold.co
-        
+
         // 1. Perdita d'acqua - pending, with photo
         Segnalazione::create([
             'foto' => ['https://placehold.co/600x400/28a745/white?text=Perdita+Acqua'],
@@ -50,7 +52,7 @@ class DatabaseSeeder extends Seeder
         Segnalazione::create([
             'foto' => [
                 'https://placehold.co/600x400/ffc107/white?text=Lampione+Spento',
-                'https://placehold.co/600x400/ffc107/white?text=Dettaglio+Lampione'
+                'https://placehold.co/600x400/ffc107/white?text=Dettaglio+Lampione',
             ],
             'tipo' => 'illuminazione pubblica',
             'lat' => 42.4089,
