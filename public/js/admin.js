@@ -179,7 +179,7 @@
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                const cardBody = document.querySelector('.card-body');
+                const cardBody = document.querySelector('.card-body.p-0');
                 if (cardBody) {
                     cardBody.innerHTML = data.html;
                 }
@@ -190,7 +190,7 @@
                 }
                 
                 const cardTitle = document.querySelector('.card-header > span');
-                const statusText = status ? (status === 'pending' ? 'In sospeso' : status === 'approved' ? 'Approvate' : 'Rifiutate') : 'In sospeso';
+                const statusText = status === 'all' || status === '' ? 'Tutte' : (status === 'pending' ? 'In sospeso' : status === 'approved' ? 'Approvate' : 'Rifiutate');
                 if (cardTitle) {
                     cardTitle.textContent = statusText;
                 }
@@ -230,7 +230,6 @@
         document.getElementById('edit_lat').value = segnalazione.lat;
         document.getElementById('edit_lng').value = segnalazione.lng;
         
-        // Clear and populate photos list
         const photosList = document.getElementById('editPhotosList');
         if (photosList && segnalazione.foto && segnalazione.foto.length > 0) {
             let photosHtml = '';
@@ -248,6 +247,10 @@
         }
         
         editModal.show();
+        
+        setTimeout(() => {
+            loadMapInEditModal();
+        }, 100);
     };
     
     window.updateSegnalazione = function() {
@@ -266,8 +269,7 @@
             return;
         }
         
-        // Validate required fields
-        if (!dati.tipo || !dati.status || !dati.lat || !dati.lng) {
+        if (!dati.tipo || !dati.status || isNaN(dati.lat) || isNaN(dati.lng)) {
             alert('Tutti i campi contrassegnati con * sono obbligatori');
             return;
         }
@@ -297,4 +299,42 @@
             alert('Errore durante l\'aggiornamento della segnalazione');
         });
     };
+    
+    function loadMapInEditModal() {
+        if (!editModal || !editModal._element || !editModal._element.classList.contains('show')) {
+            return;
+        }
+        
+        const mapContainer = document.getElementById('editMap');
+        if (!mapContainer) return;
+        
+        const lat = parseFloat(document.getElementById('edit_lat').value);
+        const lng = parseFloat(document.getElementById('edit_lng').value);
+        
+        if (isNaN(lat) || isNaN(lng)) {
+            mapContainer.innerHTML = '<p class="text-center text-muted">Coordinate non valide per la mappa</p>';
+            return;
+        }
+        
+        if (editMap) {
+            editMap.remove();
+            editMap = null;
+            editMarker = null;
+        }
+        
+        editMap = L.map('editMap').setView([lat, lng], 15);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(editMap);
+        
+        editMarker = L.marker([lat, lng], { draggable: true }).addTo(editMap);
+        
+        editMarker.on('dragend', function() {
+            const position = editMarker.getLatLng();
+            document.getElementById('edit_lat').value = position.lat.toFixed(6);
+            document.getElementById('edit_lng').value = position.lng.toFixed(6);
+        });
+    }
 })();

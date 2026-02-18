@@ -191,6 +191,10 @@
                             <label class="form-label">Foto</label>
                             <div id="editPhotosList" class="row g-2"></div>
                         </div>
+                        <div id="editMapContainer" class="mb-3">
+                            <label class="form-label">Posizione</label>
+                            <div id="editMap" style="height: 300px; border-radius: 4px; overflow: hidden;"></div>
+                        </div>
                         <input type="hidden" id="edit_id" name="id">
                     </form>
                 </div>
@@ -204,5 +208,7 @@
 @endsection
 
 @section('scripts')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="{{ asset('js/admin.js') }}"></script>
 @endsection
