@@ -254,6 +254,8 @@
 
 /* Filters Panel */
 .filters-panel {
+    max-width: 80%;
+    margin: 0 auto;
     background: white;
     padding: 1.25rem;
     border-radius: 0 0 12px 12px;

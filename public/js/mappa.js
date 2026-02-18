@@ -135,10 +135,71 @@
         });
         
         if (segnalazioni.length > 0) {
-            const bounds = markersLayer.getBounds();
-            map.fitBounds(bounds, { padding: [50, 50] });
+            centerOnDensestCluster(segnalazioni);
         }
     };
+    
+    function centerOnDensestCluster(segnalazioni) {
+        if (segnalazioni.length === 0) return;
+        if (segnalazioni.length === 1) {
+            const point = segnalazioni[0];
+            map.setView([point.lat, point.lng], 15);
+            return;
+        }
+        
+        const bounds = map.getBounds();
+        const southWest = bounds.getSouthWest();
+        const northEast = bounds.getNorthEast();
+        
+        const latMin = southWest.lat;
+        const latMax = northEast.lat;
+        const lngMin = southWest.lng;
+        const lngMax = northEast.lng;
+        
+        const latRange = latMax - latMin;
+        const lngRange = lngMax - lngMin;
+        
+        const gridSize = 4;
+        const cellLatSize = latRange / gridSize;
+        const cellLngSize = lngRange / gridSize;
+        
+        const grid = [];
+        for (let i = 0; i < gridSize; i++) {
+            grid[i] = [];
+            for (let j = 0; j < gridSize; j++) {
+                grid[i][j] = 0;
+            }
+        }
+        
+        segnalazioni.forEach(function(segnalazione) {
+            const latIdx = Math.floor((segnalazione.lat - latMin) / cellLatSize);
+            const lngIdx = Math.floor((segnalazione.lng - lngMin) / cellLngSize);
+            
+            const safeLatIdx = Math.min(Math.max(latIdx, 0), gridSize - 1);
+            const safeLngIdx = Math.min(Math.max(lngIdx, 0), gridSize - 1);
+            
+            grid[safeLatIdx][safeLngIdx]++;
+        });
+        
+        let maxCount = 0;
+        let maxLatIdx = Math.floor(gridSize / 2);
+        let maxLngIdx = Math.floor(gridSize / 2);
+        
+        for (let i = 0; i < gridSize; i++) {
+            for (let j = 0; j < gridSize; j++) {
+                if (grid[i][j] > maxCount) {
+                    maxCount = grid[i][j];
+                    maxLatIdx = i;
+                    maxLngIdx = j;
+                }
+            }
+        }
+        
+        const centerLat = latMin + (maxLatIdx * cellLatSize) + (cellLatSize / 2);
+        const centerLng = lngMin + (maxLngIdx * cellLngSize) + (cellLngSize / 2);
+        
+        map.setView([centerLat, centerLng], 14);
+    }
     
     window.getTipoIcon = function(tipo) {
         const iconsMap = {

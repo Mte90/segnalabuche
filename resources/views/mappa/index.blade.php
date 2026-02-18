@@ -206,6 +206,13 @@
                         Reset Filtri
                     </button>
                 </div>
+                
+                <div class="col-md-6 text-start">
+                    <button class="btn btn-sm btn-outline-success" id="manualPositionToggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                        Imposta Posizione Manuale
+                    </button>
+                </div>
             </div>
         </div>
         
@@ -262,7 +269,49 @@
         initMap();
         updateMap();
         updateStats();
+        setupManualPosition();
     });
+    
+    function setupManualPosition() {
+        const toggleBtn = document.getElementById('manualPositionToggle');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                toggleManualPositionMode();
+            });
+        }
+    }
+    
+    let manualPositionMode = false;
+    
+    function toggleManualPositionMode() {
+        if (!map) {
+            alert('Caricare la mappa prima di impostare la posizione manuale');
+            return;
+        }
+        
+        manualPositionMode = !manualPositionMode;
+        
+        if (manualPositionMode) {
+            document.getElementById('manualPositionToggle').classList.add('active');
+            map.on('click', onMapClick);
+            alert('Clicca sulla mappa per impostare la posizione. Il punto verrà evidenziato.');
+        } else {
+            document.getElementById('manualPositionToggle').classList.remove('active');
+            map.off('click', onMapClick);
+            alert('Modalità posizione manuale disattivata');
+        }
+    }
+    
+    function onMapClick(e) {
+        const lat = e.latlng.lat.toFixed(6);
+        const lng = e.latlng.lng.toFixed(6);
+        
+        alert('Posizione selezionata:\nLatitudine: ' + lat + '\nLongitudine: ' + lng);
+        // Add visual marker for the selected position
+        L.marker([e.latlng.lat, e.latlng.lng], {
+            draggable: true
+        }).addTo(map);
+    }
     
     function updateStats() {
         document.getElementById('pendingCount').textContent = @js($pendingCount ?? 0);

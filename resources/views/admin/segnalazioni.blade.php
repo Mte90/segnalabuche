@@ -140,6 +140,67 @@
             </div>
         </div>
     </div>
+
+    <!-- Edit Segnalazione Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modifica Segnalazione</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        @csrf
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Tipologia</label>
+                                <select class="form-select" id="edit_tipo" name="tipo" required>
+                                    <option value="">Seleziona tipologia</option>
+                                    <option value="perdita d'acqua">Perdita d'acqua</option>
+                                    <option value="tombino attappato">Tombino attappato</option>
+                                    <option value="buca stradale">Buca stradale</option>
+                                    <option value="illuminazione pubblica">Illuminazione pubblica</option>
+                                    <option value="altro">Altro</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Stato</label>
+                                <select class="form-select" id="edit_status" name="status" required>
+                                    <option value="pending">In sospeso</option>
+                                    <option value="approved">Approvato</option>
+                                    <option value="rejected">Rifiutato</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descrizione</label>
+                            <textarea class="form-control" id="edit_descrizione" name="descrizione" rows="3" maxlength="1000"></textarea>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Latitudine</label>
+                                <input type="number" class="form-control" id="edit_lat" name="lat" step="0.000001" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Longitudine</label>
+                                <input type="number" class="form-control" id="edit_lng" name="lng" step="0.000001" required>
+                            </div>
+                        </div>
+                        <div id="editPhotosContainer" class="mb-3">
+                            <label class="form-label">Foto</label>
+                            <div id="editPhotosList" class="row g-2"></div>
+                        </div>
+                        <input type="hidden" id="edit_id" name="id">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Annulla</button>
+                    <button type="button" class="btn btn-confirm-approve" id="saveEditBtn">Salva Modifiche</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')

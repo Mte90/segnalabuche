@@ -4,6 +4,7 @@
     let confirmModal = null;
     let deleteModal = null;
     let photosModal = null;
+    let editModal = null;
     let segnalazioneId = null;
     let newStatus = null;
     let currentPhotos = [];
@@ -12,8 +13,9 @@
         confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
         deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
         photosModal = new bootstrap.Modal(document.getElementById('photosModal'));
+        editModal = new bootstrap.Modal(document.getElementById('editModal'));
         
-        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        document.getElementById('deleteSegnalazioneId').addEventListener('click', function() {
             deleteSegnalazione(document.getElementById('deleteSegnalazioneId').value);
         });
         
@@ -23,6 +25,10 @@
         
         document.getElementById('confirmRejectBtn').addEventListener('click', function() {
             updateStatus('rejected');
+        });
+        
+        document.getElementById('saveEditBtn').addEventListener('click', function() {
+            updateSegnalazione();
         });
     });
     
@@ -180,6 +186,13 @@
                 if (badge && data.count !== undefined) {
                     badge.textContent = data.count;
                 }
+                
+                if (data.stats) {
+                    document.getElementById('totalCount').textContent = data.stats.total ?? '';
+                    document.getElementById('pendingCount').textContent = data.stats.pending ?? '';
+                    document.getElementById('approvedCount').textContent = data.stats.approved ?? '';
+                    document.getElementById('rejectedCount').textContent = data.stats.rejected ?? '';
+                }
             })
             .catch(error => {
                 console.error('Errore nel caricamento AJAX:', error);
@@ -197,5 +210,81 @@
             select.value = status;
             updateAdminMap();
         }
+    };
+    
+    window.showEditModal = function(segnalazione) {
+        document.getElementById('edit_id').value = segnalazione.id;
+        document.getElementById('edit_tipo').value = segnalazione.tipo;
+        document.getElementById('edit_status').value = segnalazione.status;
+        document.getElementById('edit_descrizione').value = segnalazione.descrizione || '';
+        document.getElementById('edit_lat').value = segnalazione.lat;
+        document.getElementById('edit_lng').value = segnalazione.lng;
+        
+        // Clear and populate photos list
+        const photosList = document.getElementById('editPhotosList');
+        if (photosList && segnalazione.foto && segnalazione.foto.length > 0) {
+            let photosHtml = '';
+            segnalazione.foto.forEach((photo, index) => {
+                photosHtml += `
+                    <div class="col-6 col-md-3">
+                        <div class="position-relative">
+                            <img src="${photo}" class="img-fluid rounded" style="height: 100px; object-fit: cover;" alt="Foto ${index + 1}">
+                            <span class="badge bg-primary position-absolute top-0 start-0">Foto ${index + 1}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            photosList.innerHTML = photosHtml;
+        }
+        
+        editModal.show();
+    };
+    
+    window.updateSegnalazione = function() {
+        const id = document.getElementById('edit_id').value;
+        const dati = {
+            tipo: document.getElementById('edit_tipo').value,
+            status: document.getElementById('edit_status').value,
+            descrizione: document.getElementById('edit_descrizione').value,
+            lat: parseFloat(document.getElementById('edit_lat').value),
+            lng: parseFloat(document.getElementById('edit_lng').value),
+        };
+        
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (!csrfToken) {
+            alert('Errore: Token CSRF non trovato');
+            return;
+        }
+        
+        // Validate required fields
+        if (!dati.tipo || !dati.status || !dati.lat || !dati.lng) {
+            alert('Tutti i campi contrassegnati con * sono obbligatori');
+            return;
+        }
+        
+        if (isNaN(dati.lat) || isNaN(dati.lng)) {
+            alert('Le coordinate devono essere numeri validi');
+            return;
+        }
+        
+        fetch(`/admin/segnalazioni/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify(dati)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message || 'Segnalazione aggiornata con successo');
+            // Close modal and refresh the list
+            editModal.hide();
+            updateAdminMap();
+        })
+        .catch(error => {
+            console.error('Errore:', error);
+            alert('Errore durante l\'aggiornamento della segnalazione');
+        });
     };
 })();
