@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Segnalazione extends Model
 {
@@ -67,8 +67,6 @@ class Segnalazione extends Model
 
     /**
      * Verifica se la segnalazione è approvata.
-     *
-     * @return bool
      */
     public function isApproved(): bool
     {

@@ -113,8 +113,9 @@ class SegnalazioneTest extends TestCase
             'status' => 'pending',
         ]);
 
+        // foto should be cast to array (empty) from null
         $this->assertIsArray($segnalazione->foto);
-        $this->assertCount(0, $segnalazione->foto);
+        $this->assertEmpty($segnalazione->foto);
     }
 
     public function test_validazione_latitudine_bound(): void
@@ -186,7 +187,7 @@ class SegnalazioneTest extends TestCase
         $lat2 = 42.4100;
         $lng2 = 12.8610;
 
-        $distanza = Segnalazione::haversineDistance($lat1, $lng1, $lat2, $lat2);
+        $distanza = Segnalazione::haversineDistance($lat1, $lng1, $lat2, $lng2);
 
         $this->assertGreaterThan(0, $distanza);
         $this->assertLessThan(100, $distanza);

@@ -18,6 +18,7 @@ class AdminSegnalazioneTest extends TestCase
         $this->adminUser = User::factory()->create([
             'name' => 'Admin User',
             'email' => 'admin@comune.bugliano.it',
+            'is_admin' => true,
         ]);
     }
 

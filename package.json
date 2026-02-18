@@ -1,0 +1,12 @@
+{
+  "name": "segnalabuche",
+  "version": "1.0.0",
+  "type": "module",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed"
+  }
+}

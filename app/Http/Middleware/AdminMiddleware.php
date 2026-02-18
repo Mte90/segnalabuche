@@ -11,7 +11,7 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! Auth::check()) {
+        if (! Auth::check() || ! $request->user()->is_admin) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

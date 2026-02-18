@@ -23,3 +23,4 @@ yarn-error.log
 /.zed
 /.sisyphus
 /resources/views/mail/guasto_custom/
+/test-results

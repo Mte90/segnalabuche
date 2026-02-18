@@ -34,7 +34,10 @@
         border-radius: 0;
     }
     
+    /* Filters Panel */
     .filters-panel {
+        max-width: 80%;
+        margin: 0 auto;
         background: white;
         padding: 1.25rem;
         border-radius: 0 0 12px 12px;
@@ -49,29 +52,7 @@
         margin-bottom: 0.5rem;
     }
     
-    .status-badge {
-        display: inline-block;
-        padding: 0.35rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-    
-    .status-pending {
-        background: var(--warning-color);
-        color: #856404;
-    }
-    
-    .status-approved {
-        background: var(--success-color);
-        color: white;
-    }
-    
-    .status-rejected {
-        background: var(--secondary-color);
-        color: white;
-    }
-    
+    /* Marker Icons */
     .marker-icon {
         display: flex;
         justify-content: center;
@@ -81,6 +62,7 @@
         text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
     
+    /* Info Card */
     .info-card {
         background: white;
         border-radius: 8px;
@@ -94,15 +76,42 @@
         font-weight: 600;
     }
     
+    .info-card p {
+        margin-bottom: 0.5rem;
+        color: #495057;
+    }
+    
+    .info-card .badge {
+        margin-right: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    /* Legend */
     .legend {
         background: white;
         padding: 1rem;
         border-radius: 8px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        color: #495057;
     }
     
-    /* Stats Bar */
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+    }
+    
+    .color-pending { background: var(--warning-color); }
+    .color-approved { background: var(--success-color); }
+    .color-rejected { background: var(--secondary-color); }
+    
+    /* Stats Container (for inline stats in map layout) */
     .stats-container {
         display: flex;
         justify-content: center;
@@ -133,90 +142,87 @@
         color: #c82333;
     }
     
-    .stat-item {
-        cursor: pointer;
-    }
-    
-    .info-card p {
-        margin-bottom: 0.5rem;
-        color: #495057;
-    }
-    
-    .info-card .badge {
-        margin-right: 0.25rem;
-        margin-bottom: 0.25rem;
-    }
-    
-    .legend {
+    /* Filter Box Container */
+    .filter-box {
         background: white;
-        padding: 1rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        margin-bottom: 1.5rem;
     }
     
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.5rem;
+    .filters-panel-inner {
+        padding: 1.25rem;
     }
-    
-    .legend-color {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-    }
-    
-    .color-pending { background: var(--warning-color); }
-    .color-approved { background: var(--success-color); }
-    .color-rejected { background: var(--secondary-color); }
 </style>
 @endsection
 
 @section('content')
     <div class="container-fluid">
-        <div class="filters-panel">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-3">
-                    <label class="filter-label">Stato</label>
-                    <select class="form-select" id="filterStatus">
-                        <option value="">Tutti</option>
-                        <option value="pending">In sospeso</option>
-                        <option value="approved">Approvato</option>
-                    </select>
+        <!-- Filter Box Container -->
+        <div class="filter-box">
+            <!-- Stats Bar -->
+            <div class="stats-container">
+                <div class="stat-item" onclick="filterByStatus('')">
+                    <div class="stat-number" id="pendingCount">{{ $pendingCount ?? 0 }}</div>
+                    <div class="stat-label">In sospeso</div>
                 </div>
-                <div class="col-md-3">
-                    <label class="filter-label">Tipologia</label>
-                    <select class="form-select" id="filterTipo">
-                        <option value="">Tutti</option>
-                        <option value="perdita d'acqua">Perdita d'acqua</option>
-                        <option value="tombino attappato">Tombino attappato</option>
-                        <option value="buca stradale">Buca stradale</option>
-                        <option value="illuminazione pubblica">Illuminazione pubblica</option>
-                        <option value="altro">Altro</option>
-                    </select>
+                <div class="stat-item" onclick="filterByStatus('approved')">
+                    <div class="stat-number" id="approvedCount">{{ $approvedCount ?? 0 }}</div>
+                    <div class="stat-label">Approvato</div>
                 </div>
-                <div class="col-md-6">
-                    <button class="btn btn-primary" onclick="updateMap()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                        Aggiorna Mappa
-                    </button>
-                    <button class="btn btn-outline-secondary" onclick="resetFilters()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
-                        Reset Filtri
-                    </button>
+                <div class="stat-item" onclick="filterByStatus('rejected')">
+                    <div class="stat-number" id="rejectedCount">{{ $rejectedCount ?? 0 }}</div>
+                    <div class="stat-label">Rifiutato</div>
                 </div>
-                
-                <div class="col-md-6 text-start">
-                    <button class="btn btn-sm btn-outline-success" id="manualPositionToggle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                        Imposta Posizione Manuale
-                    </button>
+            </div>
+            
+            <!-- Filter Panel -->
+            <div class="filters-panel">
+                <div class="filters-panel-inner">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="filter-label">Stato</label>
+                            <select class="form-select" id="filterStatus">
+                                <option value="">Tutti</option>
+                                <option value="pending">In sospeso</option>
+                                <option value="approved">Approvato</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="filter-label">Tipologia</label>
+                            <select class="form-select" id="filterTipo">
+                                <option value="">Tutti</option>
+                                <option value="perdita d'acqua">Perdita d'acqua</option>
+                                <option value="tombino attappato">Tombino attappato</option>
+                                <option value="buca stradale">Buca stradale</option>
+                                <option value="illuminazione pubblica">Illuminazione pubblica</option>
+                                <option value="altro">Altro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-primary" onclick="updateMap()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                                Aggiorna Mappa
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetFilters()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
+                                Reset Filtri
+                            </button>
+                        </div>
+                        
+                        <div class="col-md-6 text-start">
+                            <button class="btn btn-sm btn-outline-success" id="manualPositionToggle">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                                Imposta Posizione Manuale
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
-    <!-- Map Layout -->
+        <!-- Map Layout -->
         <div class="map-wrapper">
             <div class="legend">
                 <h6 class="mb-3"><strong>Legenda</strong></h6>
@@ -268,7 +274,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         initMap();
         updateMap();
-        updateStats();
         setupManualPosition();
     });
     
@@ -311,13 +316,6 @@
         L.marker([e.latlng.lat, e.latlng.lng], {
             draggable: true
         }).addTo(map);
-    }
-    
-    function updateStats() {
-        document.getElementById('pendingCount').textContent = @js($pendingCount ?? 0);
-        document.getElementById('approvedCount').textContent = @js($approvedCount ?? 0);
-        document.getElementById('rejectedCount').textContent = @js($rejectedCount ?? 0);
-        document.getElementById('withPhotosCount').textContent = @js($withPhotosCount ?? 0);
     }
 </script>
 <script src="{{ asset('js/mappa.js') }}"></script>
