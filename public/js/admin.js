@@ -190,8 +190,8 @@
                     badge.textContent = data.count;
                 }
                 
-                const cardTitle = document.querySelector('.card-header > span');
-                const statusText = status === 'all' || status === '' ? 'Tutte' : (status === 'pending' ? 'In sospeso' : status === 'approved' ? 'Approvate' : 'Rifiutate');
+                const cardTitle = document.querySelector('.card-header span:first-child');
+                const statusText = status === 'all' || status === '' ? 'Tutte le segnalazioni' : (status === 'pending' ? 'Segnalazioni in sospeso' : status === 'approved' ? 'Segnalazioni approvate' : 'Segnalazioni rifiutate');
                 if (cardTitle) {
                     cardTitle.textContent = statusText;
                 }
