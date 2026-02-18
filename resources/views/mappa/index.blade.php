@@ -7,156 +7,6 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 @endsection
 
-@section('styles')
-<style>
-    :root {
-        --primary-color: #dc3545;
-        --secondary-color: #6c757d;
-        --success-color: #28a745;
-        --warning-color: #ffc107;
-        --danger-color: #dc3545;
-    }
-    
-    .map-wrapper {
-        max-width: 80%;
-        margin: 0 auto;
-    }
-    
-    .map-container {
-        flex: 1;
-        padding: 0;
-        position: relative;
-    }
-    
-    #map {
-        height: calc(100vh - 180px);
-        width: 100%;
-        border-radius: 0;
-    }
-    
-    /* Filters Panel */
-    .filters-panel {
-        max-width: 80%;
-        margin: 0 auto;
-        background: white;
-        padding: 1.25rem;
-        border-radius: 0 0 12px 12px;
-        box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
-        margin-bottom: 1rem;
-    }
-    
-    .filter-label {
-        font-weight: 600;
-        color: #495057;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    /* Marker Icons */
-    .marker-icon {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-weight: 700;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    }
-    
-    /* Info Card */
-    .info-card {
-        background: white;
-        border-radius: 8px;
-        padding: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    .info-card h5 {
-        color: var(--primary-color);
-        margin-bottom: 0.75rem;
-        font-weight: 600;
-    }
-    
-    .info-card p {
-        margin-bottom: 0.5rem;
-        color: #495057;
-    }
-    
-    .info-card .badge {
-        margin-right: 0.25rem;
-        margin-bottom: 0.25rem;
-    }
-    
-    /* Legend */
-    .legend {
-        background: white;
-        padding: 1rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .legend-color {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-    }
-    
-    .color-pending { background: var(--warning-color); }
-    .color-approved { background: var(--success-color); }
-    .color-rejected { background: var(--secondary-color); }
-    
-    /* Stats Container (for inline stats in map layout) */
-    .stats-container {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        padding: 1rem 0;
-        margin-bottom: 1.5rem;
-        cursor: pointer;
-    }
-    
-    .stats-container .stat-item {
-        text-align: center;
-        flex: 1;
-    }
-    
-    .stats-container .stat-number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--primary-color);
-    }
-    
-    .stats-container .stat-label {
-        font-size: 0.85rem;
-        color: #6c757d;
-        font-weight: 500;
-    }
-    
-    .stats-container .stat-item:hover .stat-number {
-        color: #c82333;
-    }
-    
-    /* Filter Box Container */
-    .filter-box {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        margin-bottom: 1.5rem;
-    }
-    
-    .filters-panel-inner {
-        padding: 1.25rem;
-    }
-</style>
-@endsection
-
 @section('content')
     <div class="container-fluid">
         <!-- Filter Box Container -->
@@ -220,44 +70,48 @@
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Map Layout -->
-        <div class="map-wrapper">
-            <div class="legend">
-                <h6 class="mb-3"><strong>Legenda</strong></h6>
-                <div class="legend-item">
-                    <div class="legend-color color-pending"></div>
-                    <span>In sospeso</span>
+            
+            <!-- Map Layout -->
+            <div class="map-wrapper">
+            <!-- Filter Box Container with How It Works link -->
+            <div class="filter-box">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0"><strong>Legenda</strong></h6>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#howItWorksModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        Come funziona
+                    </button>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color color-approved"></div>
-                    <span>Approvato</span>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color color-pending"></div>
+                        <span>In sospeso</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color color-approved"></div>
+                        <span>Approvato</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color color-rejected"></div>
+                        <span>Rifiutato</span>
+                    </div>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color color-rejected"></div>
-                    <span>Rifiutato</span>
+                <!-- Info Box next to legend -->
+                <div class="info-card mt-3">
+                    <h6 class="mb-2"><strong>Informazioni</strong></h6>
+                    <p class="mb-1"><strong>In sospeso:</strong> Segnalazioni in attesa di approvazione</p>
+                    <p class="mb-1"><strong>Approvato:</strong> Segnalazioni confermate e visibili</p>
+                    <p class="mb-0"><strong>Rifiutato:</strong> Segnalazioni non confermate</p>
                 </div>
             </div>
             
             <div class="map-container">
                 <div id="map"></div>
             </div>
-            
-            <div class="container mb-4">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="info-card">
-                            <h5>Informazioni</h5>
-                            <p><strong>In sospeso:</strong> Segnalazioni in attesa di approvazione</p>
-                            <p><strong>Approvato:</strong> Segnalazioni confermate e visibili</p>
-                            <p><strong>Rifiutato:</strong> Segnalazioni non confermate</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
+    
+    @include('components.how-it-works-modal')
 @endsection
 
 @section('leaflet_js')
@@ -265,58 +119,5 @@
 @endsection
 
 @section('scripts')
-<script>
-    let map = null;
-    let markersLayer = null;
-    
-    const rietiCenter = [42.4097, 12.8607];
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        initMap();
-        updateMap();
-        setupManualPosition();
-    });
-    
-    function setupManualPosition() {
-        const toggleBtn = document.getElementById('manualPositionToggle');
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', function() {
-                toggleManualPositionMode();
-            });
-        }
-    }
-    
-    let manualPositionMode = false;
-    
-    function toggleManualPositionMode() {
-        if (!map) {
-            alert('Caricare la mappa prima di impostare la posizione manuale');
-            return;
-        }
-        
-        manualPositionMode = !manualPositionMode;
-        
-        if (manualPositionMode) {
-            document.getElementById('manualPositionToggle').classList.add('active');
-            map.on('click', onMapClick);
-            alert('Clicca sulla mappa per impostare la posizione. Il punto verrà evidenziato.');
-        } else {
-            document.getElementById('manualPositionToggle').classList.remove('active');
-            map.off('click', onMapClick);
-            alert('Modalità posizione manuale disattivata');
-        }
-    }
-    
-    function onMapClick(e) {
-        const lat = e.latlng.lat.toFixed(6);
-        const lng = e.latlng.lng.toFixed(6);
-        
-        alert('Posizione selezionata:\nLatitudine: ' + lat + '\nLongitudine: ' + lng);
-        // Add visual marker for the selected position
-        L.marker([e.latlng.lat, e.latlng.lng], {
-            draggable: true
-        }).addTo(map);
-    }
-</script>
 <script src="{{ asset('js/mappa.js') }}"></script>
 @endsection

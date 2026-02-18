@@ -16,11 +16,16 @@
    CSS Variables (from :root)
    ======================================== */
 :root {
-    --primary-color: #dc3545;
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    --warning-color: #ffc107;
-    --danger-color: #dc3545;
+    --primary-color: #0066cc;
+    --primary-dark: #004d99;
+    --primary-light: #f2f7fc;
+    --secondary-color: #5c6f82;
+    --emerald: #008055;
+    --orange: #cc7a00;
+    --red: #cc334d;
+    --gray-dark: #262626;
+    --gray-medium: #737373;
+    --gray-light: #e5e5e5;
 }
 
 /* ========================================
@@ -335,11 +340,11 @@
 }
 
 .color-pending {
-    background: var(--warning-color);
+    background: var(--orange);
 }
 
 .color-approved {
-    background: var(--success-color);
+    background: var(--emerald);
 }
 
 .color-rejected {
@@ -369,12 +374,12 @@
 
 .stats-container .stat-label {
     font-size: 0.85rem;
-    color: #6c757d;
+    color: var(--secondary-color);
     font-weight: 500;
 }
 
 .stats-container .stat-item:hover .stat-number {
-    color: #c82333;
+    color: var(--primary-dark);
 }
 
 /* Global stat-item (merged) */
@@ -484,4 +489,77 @@
     width: 100%;
     border-radius: 8px;
     overflow: hidden;
+}
+
+/* ========================================
+    ADDITIONAL MAPPA STYLES
+    ======================================== */
+
+/* Filter Box Container */
+.filter-box {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+}
+
+.filters-panel-inner {
+    padding: 1.25rem;
+}
+
+.form-control, .form-select {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.info-card h6 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.info-card p {
+    color: var(--secondary-color);
+    margin-bottom: 0;
+}
+
+.close-button {
+    cursor: pointer;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #c82333 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.5);
+}
+
+.small {
+    font-size: 0.9rem;
+}
+
+.close-button {
+    cursor: pointer;
 }

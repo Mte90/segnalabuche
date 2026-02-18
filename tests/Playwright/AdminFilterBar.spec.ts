@@ -14,7 +14,7 @@ test.describe("Map page filter box", () => {
   });
 
   test("filter box structure and classes are present", async ({ page }) => {
-    const filterBox = page.locator(".filter-box");
+    const filterBox = page.locator('.filter-box').first();
     await expect(filterBox).toBeVisible();
 
     const stats = filterBox.locator(".stats-container .stat-item");

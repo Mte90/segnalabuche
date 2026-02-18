@@ -229,4 +229,50 @@
         };
         return texts[status] || status;
     };
+
+    window.updateStats = function() {
+        console.log('updateStats called');
+    };
+
+    // Manual Position Mode
+    let manualPositionMode = false;
+
+    window.setupManualPosition = function() {
+        const toggleBtn = document.getElementById('manualPositionToggle');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                toggleManualPositionMode();
+            });
+        }
+    };
+
+    window.toggleManualPositionMode = function() {
+        if (!map) {
+            alert('Caricare la mappa prima di impostare la posizione manuale');
+            return;
+        }
+
+        manualPositionMode = !manualPositionMode;
+
+        if (manualPositionMode) {
+            document.getElementById('manualPositionToggle').classList.add('active');
+            map.on('click', onMapClick);
+            alert('Clicca sulla mappa per impostare la posizione. Il punto verrà evidenziato.');
+        } else {
+            document.getElementById('manualPositionToggle').classList.remove('active');
+            map.off('click', onMapClick);
+            alert('Modalità posizione manuale disattivata');
+        }
+    };
+
+    window.onMapClick = function(e) {
+        const lat = e.latlng.lat.toFixed(6);
+        const lng = e.latlng.lng.toFixed(6);
+
+        alert('Posizione selezionata:\nLatitudine: ' + lat + '\nLongitudine: ' + lng);
+        // Add visual marker for the selected position
+        L.marker([e.latlng.lat, e.latlng.lng], {
+            draggable: true
+        }).addTo(map);
+    };
 })();
