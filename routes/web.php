@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\SegnalazioneController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Mail\ApprovedNotificationMail;
 use App\Models\Segnalazione;
 use Illuminate\Support\Facades\Mail;
@@ -13,6 +14,17 @@ Route::get('/', function () {
 Route::get('/segnalazione/crea', function () {
     return view('segnalazione.create');
 })->name('segnalazione.create');
+
+// Authentication routes
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+    ->name('login')
+    ->middleware('guest');
+
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+    ->middleware('guest');
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout');
 
 Route::get('/mappa', function () {
     return view('mappa.index', [

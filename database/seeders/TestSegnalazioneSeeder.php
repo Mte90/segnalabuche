@@ -3,12 +3,31 @@
 namespace Database\Seeders;
 
 use App\Models\Segnalazione;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class TestSegnalazioneSeeder extends Seeder
 {
     public function run(): void
     {
+        // Create admin user if not exists
+        if (! User::where('email', 'admin@comune.bugliano.it')->exists()) {
+            User::create([
+                'name' => 'Admin',
+                'email' => 'admin@comune.bugliano.it',
+                'password' => Hash::make('admin'),
+                'is_admin' => true,
+            ]);
+        } else {
+            // Ensure the admin user has is_admin set
+            $admin = User::where('email', 'admin@comune.bugliano.it')->first();
+            if ($admin && ! $admin->is_admin) {
+                $admin->is_admin = true;
+                $admin->save();
+            }
+        }
+
         Segnalazione::truncate();
 
         $segnalazioni = [

@@ -22,9 +22,25 @@ class Segnalazione extends Model
     ];
 
     protected $casts = [
-        'foto' => 'array',
         'is_resolved' => 'boolean',
     ];
+
+    public function getFotoAttribute($value)
+    {
+        if ($value === null) {
+            return [];
+        }
+        if (is_string($value)) {
+            return json_decode($value, true) ?? [];
+        }
+
+        return $value;
+    }
+
+    public function setFotoAttribute($value)
+    {
+        $this->attributes['foto'] = is_array($value) ? json_encode($value) : $value;
+    }
 
     /**
      * Calcola la distanza in metri tra due coordinate usando la formula di Haversine.

@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\Segnalazione;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class SegnalazioneTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -109,7 +112,7 @@ class SegnalazioneTest extends TestCase
         $this->assertFalse($segnalazione->is_resolved);
     }
 
-    public function test_isApproved_segna_approvata(): void
+    public function test_is_approved_segna_approvata(): void
     {
         $segnalazione = Segnalazione::create([
             'foto' => [],
@@ -124,7 +127,7 @@ class SegnalazioneTest extends TestCase
         $this->assertTrue($segnalazione->isApproved());
     }
 
-    public function test_isApproved_segna_non_approvata(): void
+    public function test_is_approved_segna_non_approvata(): void
     {
         $segnalazione = Segnalazione::create([
             'foto' => [],

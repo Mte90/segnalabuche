@@ -12,7 +12,12 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (! Auth::check() || ! $request->user()->is_admin) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+            // If AJAX request, return JSON error. If browser request, redirect to login.
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+            
+            return redirect()->guest('/login');
         }
 
         return $next($request);

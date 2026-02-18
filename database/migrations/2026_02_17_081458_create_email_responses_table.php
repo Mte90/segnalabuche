@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('email_response_messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('segnalazione_id')->constrained()->onDelete('cascade');
+            $table->foreignId('segnalazione_id')->constrained('segnalazioni')->onDelete('cascade');
             $table->enum('type', ['sent', 'received']);
             $table->text('subject')->nullable();
             $table->text('body')->nullable();
