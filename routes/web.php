@@ -23,201 +23,203 @@ Route::get('/mappa', function () {
     ]);
 })->name('mappa');
 
-Route::get('/admin/segnalazioni/export', function () {
-    $status = request('status');
-    $tipo = request('tipo');
+Route::middleware('admin')->group(function () {
+    Route::get('/admin/segnalazioni/export', function () {
+        $status = request('status');
+        $tipo = request('tipo');
 
-    $query = Segnalazione::query();
-    if ($status !== 'all' && $status !== '') {
-        $query->where('status', $status);
-    }
-    if ($tipo) {
-        $query->where('tipo', $tipo);
-    }
+        $query = Segnalazione::query();
+        if ($status !== 'all' && $status !== '') {
+            $query->where('status', $status);
+        }
+        if ($tipo) {
+            $query->where('tipo', $tipo);
+        }
 
-    $segnalazioni = $query->get();
+        $segnalazioni = $query->get();
 
-    $fileName = 'segnalazioni_'.now()->format('Ymd_His').'.csv';
+        $fileName = 'segnalazioni_'.now()->format('Ymd_His').'.csv';
 
-    $headers = [
-        'Content-Type' => 'text/csv',
-        'Content-Disposition' => 'attachment; filename="'.$fileName.'"',
-    ];
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="'.$fileName.'"',
+        ];
 
-    $callback = function () use ($segnalazioni) {
-        $file = fopen('php://output', 'w');
+        $callback = function () use ($segnalazioni) {
+            $file = fopen('php://output', 'w');
 
-        // Write BOM for UTF-8
-        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            // Write BOM for UTF-8
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
 
-        // Write header row
-        fputcsv($file, ['ID', 'Tipo', 'Descrizione', 'Data', 'Stato', 'Lat', 'Lng', 'Foto']);
+            // Write header row
+            fputcsv($file, ['ID', 'Tipo', 'Descrizione', 'Data', 'Stato', 'Lat', 'Lng', 'Foto']);
 
-        // Write data rows
-        foreach ($segnalazioni as $seg) {
-            $statusLabel = match ($seg->status) {
-                'pending' => 'In sospeso',
-                'approved' => 'Approvato',
-                'rejected' => 'Rifiutato',
-                default => $seg->status,
-            };
+            // Write data rows
+            foreach ($segnalazioni as $seg) {
+                $statusLabel = match ($seg->status) {
+                    'pending' => 'In sospeso',
+                    'approved' => 'Approvato',
+                    'rejected' => 'Rifiutato',
+                    default => $seg->status,
+                };
 
-            fputcsv($file, [
-                $seg->id,
-                $seg->tipo,
-                $seg->descrizione,
-                $seg->created_at->format('d/m/Y H:i'),
-                $statusLabel,
-                $seg->lat,
-                $seg->lng,
-                ! empty($seg->foto) ? implode('|', $seg->foto) : '',
+                fputcsv($file, [
+                    $seg->id,
+                    $seg->tipo,
+                    $seg->descrizione,
+                    $seg->created_at->format('d/m/Y H:i'),
+                    $statusLabel,
+                    $seg->lat,
+                    $seg->lng,
+                    ! empty($seg->foto) ? implode('|', $seg->foto) : '',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    })->name('admin.segnalazioni.export');
+
+    Route::get('/admin/segnalazioni', function () {
+        $status = request('status', 'pending');
+        $tipo = request('tipo');
+        $ajax = request('ajax', false);
+
+        $query = Segnalazione::query();
+        if ($status !== 'all' && $status !== '') {
+            $query->where('status', $status);
+        }
+        if ($tipo) {
+            $query->where('tipo', $tipo);
+        }
+
+        $segnalazioni = $query->get();
+
+        $viewData = [
+            'segnalazioni' => $segnalazioni,
+            'count' => Segnalazione::count(),
+            'pendingCount' => Segnalazione::where('status', 'pending')->count(),
+            'approvedCount' => Segnalazione::where('status', 'approved')->count(),
+            'rejectedCount' => Segnalazione::where('status', 'rejected')->count(),
+            'currentStatus' => $status,
+            'currentTipo' => $tipo,
+        ];
+
+        if ($ajax) {
+            return response()->json([
+                'html' => view('admin._list', $viewData)->render(),
+                'count' => $segnalazioni->count(),
+                'stats' => [
+                    'total' => Segnalazione::count(),
+                    'pending' => Segnalazione::where('status', 'pending')->count(),
+                    'approved' => Segnalazione::where('status', 'approved')->count(),
+                    'rejected' => Segnalazione::where('status', 'rejected')->count(),
+                ],
             ]);
         }
 
-        fclose($file);
-    };
+        return view('admin.segnalazioni', $viewData);
+    })->name('admin.segnalazioni');
 
-    return response()->stream($callback, 200, $headers);
-})->name('admin.segnalazioni.export');
-
-Route::get('/admin/segnalazioni', function () {
-    $status = request('status', 'pending');
-    $tipo = request('tipo');
-    $ajax = request('ajax', false);
-
-    $query = Segnalazione::query();
-    if ($status !== 'all' && $status !== '') {
-        $query->where('status', $status);
-    }
-    if ($tipo) {
-        $query->where('tipo', $tipo);
-    }
-
-    $segnalazioni = $query->get();
-
-    $viewData = [
-        'segnalazioni' => $segnalazioni,
-        'count' => Segnalazione::count(),
-        'pendingCount' => Segnalazione::where('status', 'pending')->count(),
-        'approvedCount' => Segnalazione::where('status', 'approved')->count(),
-        'rejectedCount' => Segnalazione::where('status', 'rejected')->count(),
-        'currentStatus' => $status,
-        'currentTipo' => $tipo,
-    ];
-
-    if ($ajax) {
-        return response()->json([
-            'html' => view('admin._list', $viewData)->render(),
-            'count' => $segnalazioni->count(),
-            'stats' => [
-                'total' => Segnalazione::count(),
-                'pending' => Segnalazione::where('status', 'pending')->count(),
-                'approved' => Segnalazione::where('status', 'approved')->count(),
-                'rejected' => Segnalazione::where('status', 'rejected')->count(),
-            ],
+    Route::put('/admin/segnalazioni/{id}/status', function (Illuminate\Http\Request $request, $id) {
+        $request->validate([
+            'status' => 'required|string|in:pending,approved,rejected',
         ]);
-    }
 
-    return view('admin.segnalazioni', $viewData);
-})->name('admin.segnalazioni');
+        $segnalazione = Segnalazione::find($id);
 
-Route::put('/admin/segnalazioni/{id}/status', function (Illuminate\Http\Request $request, $id) {
-    $request->validate([
-        'status' => 'required|string|in:pending,approved,rejected',
-    ]);
+        if (! $segnalazione) {
+            return response()->json(['error' => 'Segnalazione non trovata'], 404);
+        }
 
-    $segnalazione = Segnalazione::find($id);
+        $oldStatus = $segnalazione->status;
+        $segnalazione->status = $request->status;
+        $segnalazione->save();
 
-    if (! $segnalazione) {
-        return response()->json(['error' => 'Segnalazione non trovata'], 404);
-    }
+        if ($request->status === 'approved' && $oldStatus !== 'approved') {
+            Mail::to(SegnalazioneController::getEmailForTipo($segnalazione->tipo))
+                ->send(new ApprovedNotificationMail($segnalazione));
+        }
 
-    $oldStatus = $segnalazione->status;
-    $segnalazione->status = $request->status;
-    $segnalazione->save();
+        return response()->json([
+            'message' => 'Stato aggiornato con successo',
+            'segnalazione' => $segnalazione,
+        ]);
+    })->name('admin.segnalazioni.status.update');
 
-    if ($request->status === 'approved' && $oldStatus !== 'approved') {
-        Mail::to(SegnalazioneController::getEmailForTipo($segnalazione->tipo))
-            ->send(new ApprovedNotificationMail($segnalazione));
-    }
+    Route::delete('/admin/segnalazioni/{id}', function ($id) {
+        $segnalazione = Segnalazione::find($id);
 
-    return response()->json([
-        'message' => 'Stato aggiornato con successo',
-        'segnalazione' => $segnalazione,
-    ]);
-})->name('admin.segnalazioni.status.update');
+        if (! $segnalazione) {
+            return response()->json(['error' => 'Segnalazione non trovata'], 404);
+        }
 
-Route::delete('/admin/segnalazioni/{id}', function ($id) {
-    $segnalazione = Segnalazione::find($id);
+        $segnalazione->delete();
 
-    if (! $segnalazione) {
-        return response()->json(['error' => 'Segnalazione non trovata'], 404);
-    }
+        return response()->json(['message' => 'Segnalazione eliminata con successo']);
+    })->name('admin.segnalazioni.delete');
 
-    $segnalazione->delete();
+    Route::put('/admin/segnalazioni/{id}', function (Illuminate\Http\Request $request, $id) {
+        $request->validate([
+            'tipo' => 'required|string|in:perdita d\'acqua,tombino attappato,buca stradale,illuminazione pubblica,altro',
+            'status' => 'required|string|in:pending,approved,rejected',
+            'descrizione' => 'nullable|string|max:1000',
+            'lat' => 'required|numeric|between:-90,90',
+            'lng' => 'required|numeric|between:-180,180',
+        ], [
+            'tipo.required' => 'La tipologia è obbligatoria.',
+            'tipo.in' => 'Tipologia non valida.',
+            'status.required' => 'Lo stato è obbligatorio.',
+            'status.in' => 'Stato non valido.',
+            'descrizione.max' => 'La descrizione non può superare 1000 caratteri.',
+            'lat.required' => 'La latitudine è obbligatoria.',
+            'lat.numeric' => 'La latitudine deve essere un numero.',
+            'lat.between' => 'La latitudine deve essere tra -90 e 90.',
+            'lng.required' => 'La longitudine è obbligatoria.',
+            'lng.numeric' => 'La longitudine deve essere un numero.',
+            'lng.between' => 'La longitudine deve essere tra -180 e 180.',
+        ]);
 
-    return response()->json(['message' => 'Segnalazione eliminata con successo']);
-})->name('admin.segnalazioni.delete');
+        $segnalazione = Segnalazione::find($id);
 
-Route::put('/admin/segnalazioni/{id}', function (Illuminate\Http\Request $request, $id) {
-    $request->validate([
-        'tipo' => 'required|string|in:perdita d\'acqua,tombino attappato,buca stradale,illuminazione pubblica,altro',
-        'status' => 'required|string|in:pending,approved,rejected',
-        'descrizione' => 'nullable|string|max:1000',
-        'lat' => 'required|numeric|between:-90,90',
-        'lng' => 'required|numeric|between:-180,180',
-    ], [
-        'tipo.required' => 'La tipologia è obbligatoria.',
-        'tipo.in' => 'Tipologia non valida.',
-        'status.required' => 'Lo stato è obbligatorio.',
-        'status.in' => 'Stato non valido.',
-        'descrizione.max' => 'La descrizione non può superare 1000 caratteri.',
-        'lat.required' => 'La latitudine è obbligatoria.',
-        'lat.numeric' => 'La latitudine deve essere un numero.',
-        'lat.between' => 'La latitudine deve essere tra -90 e 90.',
-        'lng.required' => 'La longitudine è obbligatoria.',
-        'lng.numeric' => 'La longitudine deve essere un numero.',
-        'lng.between' => 'La longitudine deve essere tra -180 e 180.',
-    ]);
+        if (! $segnalazione) {
+            return response()->json(['error' => 'Segnalazione non trovata'], 404);
+        }
 
-    $segnalazione = Segnalazione::find($id);
+        $segnalazione->tipo = $request->tipo;
+        $segnalazione->status = $request->status;
+        $segnalazione->descrizione = $request->descrizione;
+        $segnalazione->lat = $request->lat;
+        $segnalazione->lng = $request->lng;
+        $segnalazione->save();
 
-    if (! $segnalazione) {
-        return response()->json(['error' => 'Segnalazione non trovata'], 404);
-    }
+        return response()->json([
+            'message' => 'Segnalazione aggiornata con successo',
+            'segnalazione' => $segnalazione,
+        ]);
+    })->name('admin.segnalazioni.update');
 
-    $segnalazione->tipo = $request->tipo;
-    $segnalazione->status = $request->status;
-    $segnalazione->descrizione = $request->descrizione;
-    $segnalazione->lat = $request->lat;
-    $segnalazione->lng = $request->lng;
-    $segnalazione->save();
+    Route::post('/api/segnalazioni/{id}/position', function (Illuminate\Http\Request $request, $id) {
+        $request->validate([
+            'lat' => 'required|numeric|between:-90,90',
+            'lng' => 'required|numeric|between:-180,180',
+        ]);
 
-    return response()->json([
-        'message' => 'Segnalazione aggiornata con successo',
-        'segnalazione' => $segnalazione,
-    ]);
-})->name('admin.segnalazioni.update');
+        $segnalazione = Segnalazione::find($id);
 
-Route::post('/api/segnalazioni/{id}/position', function (Illuminate\Http\Request $request, $id) {
-    $request->validate([
-        'lat' => 'required|numeric|between:-90,90',
-        'lng' => 'required|numeric|between:-180,180',
-    ]);
+        if (! $segnalazione) {
+            return response()->json(['error' => 'Segnalazione non trovata'], 404);
+        }
 
-    $segnalazione = Segnalazione::find($id);
+        $segnalazione->lat = $request->lat;
+        $segnalazione->lng = $request->lng;
+        $segnalazione->save();
 
-    if (! $segnalazione) {
-        return response()->json(['error' => 'Segnalazione non trovata'], 404);
-    }
-
-    $segnalazione->lat = $request->lat;
-    $segnalazione->lng = $request->lng;
-    $segnalazione->save();
-
-    return response()->json([
-        'message' => 'Posizione aggiornata con successo',
-        'lat' => $segnalazione->lat,
-        'lng' => $segnalazione->lng,
-    ]);
-})->name('api.segnalazioni.position');
+        return response()->json([
+            'message' => 'Posizione aggiornata con successo',
+            'lat' => $segnalazione->lat,
+            'lng' => $segnalazione->lng,
+        ]);
+    })->name('api.segnalazioni.position');
+});

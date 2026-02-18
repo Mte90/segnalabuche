@@ -23,22 +23,25 @@ class AdminFilterTest extends TestCase
             'tipo' => 'perdita d\'acqua',
             'lat' => 42.4097,
             'lng' => 12.8607,
+            'descrizione' => 'Prima segnalazione',
             'status' => 'pending',
         ]);
         Segnalazione::create([
             'tipo' => 'tombino attappato',
             'lat' => 42.4100,
             'lng' => 12.8610,
+            'descrizione' => 'Seconda segnalazione',
             'status' => 'approved',
         ]);
         Segnalazione::create([
             'tipo' => 'buca stradale',
             'lat' => 42.4095,
             'lng' => 12.8605,
+            'descrizione' => 'Terza segnalazione',
             'status' => 'rejected',
         ]);
 
-        $response = $this->getJson('/admin/segnalazioni?status=pending&display=list');
+        $response = $this->getJson('/admin/segnalazioni?status=pending&display=list&ajax=true');
 
         $response->assertStatus(200);
         $data = $response->json('data');
@@ -54,22 +57,25 @@ class AdminFilterTest extends TestCase
             'tipo' => 'perdita d\'acqua',
             'lat' => 42.4097,
             'lng' => 12.8607,
+            'descrizione' => 'Prima segnalazione',
             'status' => 'pending',
         ]);
         Segnalazione::create([
             'tipo' => 'perdita d\'acqua',
             'lat' => 42.4100,
             'lng' => 12.8610,
+            'descrizione' => 'Seconda segnalazione',
             'status' => 'pending',
         ]);
         Segnalazione::create([
             'tipo' => 'tombino attappato',
             'lat' => 42.4095,
             'lng' => 12.8605,
+            'descrizione' => 'Terza segnalazione',
             'status' => 'pending',
         ]);
 
-        $response = $this->getJson('/admin/segnalazioni?tipo=perdita+d%27acqua&display=list');
+        $response = $this->getJson('/admin/segnalazioni?tipo=perdita+d%27acqua&display=list&ajax=true');
 
         $response->assertStatus(200);
         $data = $response->json('data');
@@ -85,6 +91,7 @@ class AdminFilterTest extends TestCase
             'tipo' => 'perdita d\'acqua',
             'lat' => 42.4097,
             'lng' => 12.8607,
+            'descrizione' => 'Prima segnalazione',
             'status' => 'pending',
         ]);
 
@@ -109,24 +116,28 @@ class AdminFilterTest extends TestCase
             'tipo' => 'perdita d\'acqua',
             'lat' => 42.4097,
             'lng' => 12.8607,
+            'descrizione' => 'Prima segnalazione',
             'status' => 'pending',
         ]);
         Segnalazione::create([
             'tipo' => 'tombino attappato',
             'lat' => 42.4100,
             'lng' => 12.8610,
+            'descrizione' => 'Seconda segnalazione',
             'status' => 'approved',
         ]);
         Segnalazione::create([
             'tipo' => 'buca stradale',
             'lat' => 42.4095,
             'lng' => 12.8605,
+            'descrizione' => 'Terza segnalazione',
             'status' => 'rejected',
         ]);
         Segnalazione::create([
             'tipo' => 'illuminazione pubblica',
             'lat' => 42.4098,
             'lng' => 12.8608,
+            'descrizione' => 'Quarta segnalazione',
             'status' => 'pending',
         ]);
 
@@ -147,15 +158,15 @@ class AdminFilterTest extends TestCase
             'tipo' => 'perdita d\'acqua',
             'lat' => 42.4097,
             'lng' => 12.8607,
-            'status' => 'pending',
             'descrizione' => 'Test segnalazione',
+            'status' => 'pending',
         ]);
 
         $response = $this->get('/admin/segnalazioni/export?status=pending');
 
         $response->assertStatus(200);
-        $response->assertHeader('Content-Type', 'text/csv');
-        $response->assertHeader('Content-Disposition', 'attachment; filename=segnalazioni_*.csv');
+        $response->assertHeader('Content-Type', 'text/csv; charset=utf-8');
+        $response->assertHeader('Content-Disposition', 'attachment; filename="segnalazioni_*.csv"');
     }
 
     public function test_admin_segnalazioni_update_status_endpoint(): void
@@ -164,6 +175,7 @@ class AdminFilterTest extends TestCase
             'tipo' => 'perdita d\'acqua',
             'lat' => 42.4097,
             'lng' => 12.8607,
+            'descrizione' => 'Test segnalazione',
             'status' => 'pending',
         ]);
 
@@ -181,6 +193,7 @@ class AdminFilterTest extends TestCase
             'tipo' => 'perdita d\'acqua',
             'lat' => 42.4097,
             'lng' => 12.8607,
+            'descrizione' => 'Test segnalazione',
             'status' => 'pending',
         ]);
 
@@ -197,6 +210,7 @@ class AdminFilterTest extends TestCase
             'tipo' => 'perdita d\'acqua',
             'lat' => 42.4097,
             'lng' => 12.8607,
+            'descrizione' => 'Test segnalazione',
             'status' => 'pending',
         ]);
 

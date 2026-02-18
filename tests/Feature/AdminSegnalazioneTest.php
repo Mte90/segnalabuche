@@ -143,11 +143,17 @@ class AdminSegnalazioneTest extends TestCase
             'email' => 'user@example.com',
         ]);
 
+        // Ensure the user is authenticated and has email
+        $this->assertNotNull($nonAdminUser->email);
+
         $response = $this->actingAs($nonAdminUser)->putJson(
             "/admin/segnalazioni/{$segnalazione->id}",
             [
                 'tipo' => 'tombino attappato',
                 'status' => 'approved',
+                'descrizione' => 'Perdita d\'acqua aggiornata',
+                'lat' => 42.4100,
+                'lng' => 12.8610,
             ]
         );
 
@@ -161,6 +167,9 @@ class AdminSegnalazioneTest extends TestCase
             [
                 'tipo' => 'tombino attappato',
                 'status' => 'approved',
+                'descrizione' => 'Perdita d\'acqua aggiornata',
+                'lat' => 42.4100,
+                'lng' => 12.8610,
             ]
         );
 
