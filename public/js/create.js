@@ -70,6 +70,8 @@
     let descrizioneCount = null;
     let latInput = null;
     let lngInput = null;
+    let manualMap = null;
+    let manualMarker = null;
     
     function setupEventListeners() {
         descrizioneInput.addEventListener('input', function() {
@@ -124,6 +126,85 @@
                 modal.show();
             });
         }
+    }
+    
+    function setupManualLocationModal() {
+        const manualLocationBtn = document.getElementById('manualLocationBtn');
+        const confirmManualBtn = document.getElementById('confirmManualLocation');
+        const manualLatInput = document.getElementById('manualLat');
+        const manualLngInput = document.getElementById('manualLng');
+        
+        const manualModalEl = document.getElementById('manualLocationModal');
+        if (!manualModalEl) return;
+        
+        const manualModal = new bootstrap.Modal(manualModalEl);
+        
+        if (manualLocationBtn) {
+            manualLocationBtn.addEventListener('click', function() {
+                if (!manualMap) {
+                    initManualMap();
+                }
+                manualModal.show();
+            });
+        }
+        
+        if (confirmManualBtn) {
+            confirmManualBtn.addEventListener('click', function() {
+                if (manualLatInput.value && manualLngInput.value) {
+                    latInput.value = manualLatInput.value;
+                    lngInput.value = manualLngInput.value;
+                    
+                    fetchAddressFromCoords(parseFloat(manualLatInput.value), parseFloat(manualLngInput.value));
+                    
+                    manualModal.hide();
+                    
+                    if (!map) {
+                        initMap();
+                    }
+                }
+            });
+        }
+    }
+    
+    function initManualMap() {
+        const rietiCenter = [42.4097, 12.8607];
+        
+        manualMap = L.map('manualMap').setView(rietiCenter, 14);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(manualMap);
+        
+        manualMarker = L.marker(rietiCenter, {
+            draggable: true
+        }).addTo(manualMap);
+        
+        const manualLatInput = document.getElementById('manualLat');
+        const manualLngInput = document.getElementById('manualLng');
+        
+        if (manualLatInput && manualLngInput) {
+            manualLatInput.value = rietiCenter[0].toFixed(6);
+            manualLngInput.value = rietiCenter[1].toFixed(6);
+        }
+        
+        manualMarker.on('dragend', function() {
+            const position = manualMarker.getLatLng();
+            if (manualLatInput && manualLngInput) {
+                manualLatInput.value = position.lat.toFixed(6);
+                manualLngInput.value = position.lng.toFixed(6);
+            }
+        });
+        
+        manualMap.on('click', function(e) {
+            if (manualMarker) {
+                manualMarker.setLatLng([e.latlng.lat, e.latlng.lng]);
+            }
+            if (manualLatInput && manualLngInput) {
+                manualLatInput.value = e.latlng.lat.toFixed(6);
+                manualLngInput.value = e.latlng.lng.toFixed(6);
+            }
+        });
     }
     
     function requestGeoLocation() {
@@ -377,6 +458,7 @@
         
         setupEventListeners();
         setupFAQTrigger();
+        setupManualLocationModal();
         
         const cityTitle = document.getElementById('cityTitle');
         if (cityTitle) {

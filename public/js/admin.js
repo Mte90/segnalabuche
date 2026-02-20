@@ -191,7 +191,7 @@
                 }
                 
                 const cardTitle = document.querySelector('.card-header span:first-child');
-                const statusText = status === 'all' || status === '' ? 'Tutte le segnalazioni' : (status === 'pending' ? 'Segnalazioni in sospeso' : status === 'approved' ? 'Segnalazioni approvate' : 'Segnalazioni rifiutate');
+                const statusText = window.getStatusLabel(status);
                 if (cardTitle) {
                     cardTitle.textContent = statusText;
                 }
@@ -254,10 +254,10 @@
         
         setTimeout(() => {
             if (!isNaN(lat) && !isNaN(lng)) {
-                loadMapInEditModal();
                 if (editMap) {
                     editMap.invalidateSize();
                 }
+                loadMapInEditModal();
             }
         }, 100);
     };
@@ -280,11 +280,6 @@
         
         if (!dati.tipo || !dati.status || isNaN(dati.lat) || isNaN(dati.lng)) {
             alert('Tutti i campi contrassegnati con * sono obbligatori');
-            return;
-        }
-        
-        if (isNaN(dati.lat) || isNaN(dati.lng)) {
-            alert('Le coordinate devono essere numeri validi');
             return;
         }
         

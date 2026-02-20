@@ -74,7 +74,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <span>{{ $currentStatus === '' ? 'Tutte le segnalazioni' : ($currentStatus === 'pending' ? 'Segnalazioni in sospeso' : ($currentStatus === 'approved' ? 'Segnalazioni approvate' : 'Segnalazioni rifiutate')) }}</span>
+                    <span>{{ \App\Helpers\AdminHelper::statusLabel($currentStatus) }}</span>
                     <span class="badge bg-primary">{{ $segnalazioni->count() ?? 0 }}</span>
                 </div>
             </div>
@@ -210,5 +210,9 @@
 @section('scripts')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    window.adminStatusLabels = @json(\App\Helpers\AdminHelper::getStatusMapping());
+</script>
+<script src="{{ asset('js/admin-filter.js') }}"></script>
 <script src="{{ asset('js/admin.js') }}"></script>
 @endsection

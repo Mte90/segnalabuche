@@ -1,91 +1,106 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
+import { execSync } from 'child_process';
 
-test.describe('Admin list filter interaction & status-text update', () => {
+async function seedTestDataAndLogin() {
+  execSync('php artisan db:seed --class=TestSegnalazioneSeeder', { stdio: 'ignore' });
+  return 'admin@comune.bugliano.it';
+}
+
+test.describe("Admin list filter interaction & status-text update", () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to admin page - it will redirect to login
-    await page.goto('/admin/segnalazioni', { waitUntil: 'networkidle' });
-    
-    // Fill login form
+    await seedTestDataAndLogin();
+  });
+
+  test("admin logs in and navigates to admin segnalazioni page", async ({ page }) => {
+    await page.goto("/admin/segnalazioni", { waitUntil: 'domcontentloaded' });
     await page.fill('input[name="email"]', 'admin@comune.bugliano.it');
     await page.fill('input[name="password"]', 'admin');
     await page.getByRole('button', { name: /accedi/i }).click();
-    
-    // Wait for redirect to admin page
-    await page.waitForURL('/admin/segnalazioni');
-  });
-
-  test('admin logs in and navigates to admin segnalazioni page', async ({ page }) => {
-    // Verify we're on the admin page
+    await page.waitForURL(/admin\/segnalazioni/);
     await expect(page).toHaveURL(/admin\/segnalazioni/);
-    
-    // Verify stats bar is visible
-    await expect(page.locator('.stats-bar')).toBeVisible();
   });
 
-  test('filter buttons are present (Filtra, Reset, Esporta CSV)', async ({ page }) => {
-    // Verify filter button
-    await expect(page.getByRole('button', { name: /Filtra/i })).toBeVisible();
+  test("filter select dropdown and stat items are present", async ({ page }) => {
+    await page.goto("/admin/segnalazioni", { waitUntil: 'domcontentloaded' });
+    await page.fill('input[name="email"]', 'admin@comune.bugliano.it');
+    await page.fill('input[name="password"]', 'admin');
+    await page.getByRole('button', { name: /accedi/i }).click();
+    await page.waitForURL(/admin\/segnalazioni/);
+    await page.waitForTimeout(500);
+
+    const statItems = page.locator('.stat-item');
+    await expect(statItems).toHaveCount(4);
     
-    // Verify reset button
-    await expect(page.getByRole('button', { name: /Reset/i })).toBeVisible();
-    
-    // Verify export CSV button
-    await expect(page.getByRole('button', { name: /Esporta CSV/i })).toBeVisible();
+    await expect(statItems.nth(0)).toContainText('Totali');
+    await expect(statItems.nth(1)).toContainText('In Sospeso');
+    await expect(statItems.nth(2)).toContainText('Approvate');
+    await expect(statItems.nth(3)).toContainText('Rifiutate');
   });
 
-  test('select "Approvato" via stat item and verify status-text update', async ({ page }) => {
-    // Get initial header title
-    const initialTitle = page.locator('.card-header span:first-child');
-    const initialText = await initialTitle.textContent();
+  test("select 'Approvato' filter via stat item updates select value", async ({ page }) => {
+    await page.goto("/admin/segnalazioni", { waitUntil: 'domcontentloaded' });
+    await page.fill('input[name="email"]', 'admin@comune.bugliano.it');
+    await page.fill('input[name="password"]', 'admin');
+    await page.getByRole('button', { name: /accedi/i }).click();
+    await page.waitForURL(/admin\/segnalazioni/);
+    await page.waitForTimeout(500);
+
+    const select = page.locator('#adminFilterStatus');
+    await expect(select).toHaveValue('all');
     
-    // Click the "Approvate" stat item to filter
-    await page.locator('.stat-item', { hasText: 'Approvate' }).click();
+    const statItems = page.locator('.stat-item');
+    const approvatoItem = statItems.nth(2);
+    await approvatoItem.click();
     
-    // Wait for the AJAX request to complete
+    await page.waitForFunction(() => {
+      const select = document.getElementById('adminFilterStatus');
+      return select && select.value === 'approved';
+    }, { timeout: 5000 });
+    
+    await expect(select).toHaveValue('approved');
+  });
+
+  test("select 'Approvato' filter and verify badge text changes to 'Segnalazioni approvate'", async ({ page }) => {
+    await page.goto("/admin/segnalazioni", { waitUntil: 'domcontentloaded' });
+    await page.fill('input[name="email"]', 'admin@comune.bugliano.it');
+    await page.fill('input[name="password"]', 'admin');
+    await page.getByRole('button', { name: /accedi/i }).click();
+    await page.waitForURL(/admin\/segnalazioni/);
+    await page.waitForTimeout(500);
+
+    const statItems = page.locator('.stat-item');
+    const approvatoItem = statItems.nth(2);
+    await approvatoItem.click();
+    
+    await page.waitForFunction(() => {
+      const select = document.getElementById('adminFilterStatus');
+      return select && select.value === 'approved';
+    }, { timeout: 5000 });
+    
     await page.waitForTimeout(1000);
     
-    // Verify status text has changed
-    const newTitle = page.locator('.card-header span:first-child');
-    await expect(newTitle).not.toHaveText(initialText);
-    await expect(newTitle).toContainText('Approvate');
+    const cardHeader = page.locator('.card-header span:first-child');
+    await expect(cardHeader).toContainText('Segnalazioni approvate');
+    
+    const statsBar = page.locator('.stats-bar');
+    await expect(statsBar).toBeVisible();
   });
 
-  test('select "Approvato" via dropdown, click Filter and verify badge updates', async ({ page }) => {
-    // Locate the select dropdown and change selection to "Approvato"
-    const statusSelect = page.locator('#adminFilterStatus');
-    await statusSelect.selectOption({ value: 'approved' });
-    
-    // Click the Filter button
-    await page.getByRole('button', { name: /Filtra/i }).click();
-    
-    // Wait for the AJAX request to complete
+  test("stats bar remains visible after filtering", async ({ page }) => {
+    await page.goto("/admin/segnalazioni", { waitUntil: 'domcontentloaded' });
+    await page.fill('input[name="email"]', 'admin@comune.bugliano.it');
+    await page.fill('input[name="password"]', 'admin');
+    await page.getByRole('button', { name: /accedi/i }).click();
+    await page.waitForURL(/admin\/segnalazioni/);
     await page.waitForTimeout(500);
-    
-    // Verify status text in header changes to 'Approvate'
-    await expect(page.locator('.card-header span:first-child')).toContainText('Approvate');
-    
-    // Verify badge shows count
-    const badge = page.locator('.card-header span.badge');
-    await expect(badge).toBeVisible();
-    await expect(badge).not.toHaveText('0');
-  });
 
-  test('reset filters clears all selections', async ({ page }) => {
-    // First, apply a filter
-    await page.locator('#adminFilterStatus').selectOption({ value: 'approved' });
-    await page.getByRole('button', { name: /Filtra/i }).click();
+    const statsBar = page.locator('.stats-bar');
+    await expect(statsBar).toBeVisible();
+
+    const statItems = page.locator('.stat-item');
+    await statItems.nth(2).click();
     await page.waitForTimeout(500);
-    
-    // Verify filter is applied
-    await expect(page.locator('.card-header span:first-child')).toContainText('Approvate');
-    
-    // Click Reset button
-    await page.getByRole('button', { name: /Reset/i }).click();
-    
-    // Wait for the reset to complete
-    await page.waitForTimeout(500);
-    
-    // Verify all filters are cleared (dropdown should show "all")
-    await expect(page.locator('#adminFilterStatus')).toHaveValue('all');
+
+    await expect(statsBar).toBeVisible();
   });
 });

@@ -37,10 +37,16 @@
                         <div class="geolocation-status pending" id="geolocationStatus">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                             <span id="geolocationText">Posizione in fase di rilevamento...</span>
-                            <button type="button" class="btn btn-sm btn-outline-primary ms-auto" id="getLocationBtn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                                Aggiorna Posizione
-                            </button>
+                            <div class="d-flex gap-2 ms-auto">
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="getLocationBtn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    Aggiorna Posizione
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="manualLocationBtn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 8.4c.5.38.8.97.8 1.6v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 .8-1.6l8-6a2 2 0 0 1 2.4 0l8 6Z"></path></svg>
+                                    Imposta posizione manuale
+                                </button>
+                            </div>
                         </div>
                         
                         <!-- Coordinate (nascoste, popolate da JS) -->
@@ -106,6 +112,7 @@
     </div>
     
     @include('components.how-it-works-modal')
+    @include('components.manual-location-modal')
 @endsection
 
 @section('leaflet_js')
